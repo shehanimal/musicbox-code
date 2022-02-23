@@ -1,0 +1,1661 @@
+<?php
+function musicbox_functions_process_menu() {
+	$items = array();
+	
+  $items['musicbox_theme_handling/autocomplete'] = array(
+    'page callback' => 'musicbox_theme_handling_autocomplete',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  
+   $items['musicbox_moods/autocomplete'] = array(
+    'page callback' => 'musicbox_moods_autocomplete',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  
+   $items['reopen_old/%'] = array(
+    'page callback' => 'reopen_oldaccount_callback',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  
+     $items['resetpass'] = array(
+    'page callback' => 'reset_password_callback',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+       $items['resetpass_out'] = array(
+    'page callback' => 'resetpass_out_password_callback',
+    'access callback' => TRUE,
+    'type' => MENU_CALLBACK,
+  );
+  
+  	$items['liked_post'] = array(
+        'page callback' => 'musicbox_liked_post_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+	$items['unlike_post'] = array(
+        'page callback' => 'musicbox_unlike_post_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+	$items['selected1'] = array(
+        'page callback' => 'selected_package1_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+	
+	$items['selected2'] = array(
+        'page callback' => 'selected_package2_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+	
+	$items['selected3'] = array(
+        'page callback' => 'selected_package3_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );	
+	
+
+
+	  $items['post_comment_artist'] = array(
+        'page callback' => 'post_comment_artist_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+		$items['daily_payment'] = array(
+        'page callback' => 'musicbox_daily_payment_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );	
+	
+	$items['unsubscribe_user/%'] = array(
+        'page callback' => 'unsubscribe_user_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+	$items['active_user/%'] = array(
+        'page callback' => 'active_user_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+		$items['api_user'] = array(
+        'page callback' => 'musicbox_api_call_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );	
+	
+		$items['deactivate/%'] = array(
+        'page callback' => 'musicbox_deactivate_user_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );	
+	
+		$items['tester'] = array(
+        'page callback' => 'musicbox_tester_call_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );	
+		 $items['artist_picture/%'] = array(
+        'page callback' => 'musicbox_subscriber_hits_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+    
+//authenticate menu items    
+		$items['welcome_home/%'] = array(
+        'page callback' => 'musicbox_active_welcome_home_call_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );	
+	
+		$items['welcome_subscrib/%'] = array(
+        'page callback' => 'musicbox_active_welcome_subscrib_call_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+		$items['welcome_profile/%'] = array(
+        'page callback' => 'musicbox_active_welcome_profile_call_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+  return $items;
+ 
+ 
+}
+
+//----------------------------------------------------------------------------------------------------------------
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+function musicbox_subscriber_hits_callback(){
+global $user; 
+	 global $base_url;
+	 $uniqueId= time();
+	 
+$id = db_insert("musicbox_page_hits")
+    ->fields(array(
+	    'recode_id' => $decodeuser.$uniqueId,
+        'subscriber_uid' => $user->uid,
+        'hit_date' => date('Y-m-d h:i:s'),
+        'artist_id' => arg(1),
+		'sub_status' => 1,
+       
+       
+    ))
+    ->execute();
+drupal_goto($base_url."/pictures/".arg(1)."");	
+}
+//----------------------------------------------------------------------------------------------------------------
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+function musicbox_active_welcome_profile_call_back(){
+global $user; 
+	 global $base_url;
+
+$existingUser = user_load(arg(1));
+$existingUser -> status = 1;
+user_save($existingUser);
+
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+
+drupal_goto($base_url."/user");	
+}
+
+//----------------------------------------------------------------------------------------------------------------
+function musicbox_active_welcome_subscrib_call_back(){
+global $user; 
+	 global $base_url;
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+$existingUser = user_load(arg(1));
+$existingUser -> status = 1;
+user_save($existingUser);
+drupal_goto($base_url."/subscribe_artist");	
+}
+
+//----------------------------------------------------------------------------------------------------------------
+function musicbox_active_welcome_home_call_back(){
+global $user; 
+	 global $base_url;
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+$existingUser = user_load(arg(1));
+$existingUser -> status = 1;
+user_save($existingUser);
+drupal_goto($base_url."/infortainment");	
+}
+//----------------------------------------------------------------------------------------------------------------
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+function musicbox_tester_call_back(){
+		$query1 = db_select('musicbox_incom', 'p');
+		$query1->distinct();
+		$query1->fields('p', array('artist_uid'));
+		$query1->condition('p.artist_status', 1, '=');
+		$result1 = $query1->execute();
+		foreach ($result1 as $artist) {
+	$subs_query = db_select('music_box_subscrib', 's');	
+	$subs_query->fields('s', array('subscriber_uid','subscrib_date'));
+	$subs_query->condition('s.artist_uid', $artist->artist_uid, '=');
+	$subs_query->condition('s.artist_status', 1, '=');
+	$subs_object = $subs_query->execute()->fetchAll();
+	
+	print $artist->artist_uid.'<br>';
+
+	foreach ($subs_object as $subscri) {
+		$currentpack = _get_currently_updated_package($subscri->subscriber_uid);
+		$startdate = $subscri->subscrib_date;
+		
+		
+		$enddate = _get_end_date_of_subs($subscri->subscriber_uid);
+		//$enddate = date('Y-m-d h:i:s');
+
+$diff = (strtotime($enddate)- strtotime($startdate))/24/3600;
+	
+		
+	
+
+		print '<pre>';
+		$days = round($diff, 0); 
+		print('days'.$days);
+		print_r($subscri);
+		print 'pack-'.$currentpack;
+		print '</pre>';
+	print '--------------------------------------------------';
+	
+	if($currentpack == 10){
+		
+		$packfee = $days * 2;
+	}else if($currentpack == 11){
+		$packfee = $days * 3;
+	}else if($currentpack == 12){
+		$packfee = $days * 5;
+	}
+		$tuser = user_load($artist->artist_uid) ;
+    $profile2 = profile2_load_by_user($tuser->uid, 'artist');
+	$artist_presentage = $profile2->field_artist_precentage['und'][0]['value'];
+$art_income = (($artist_presentage*$packfee)/100);
+    $num_updated  = db_update('musicbox_incom')
+    ->fields(array('income' => $packfee,))
+    ->condition('artist_uid', $artist->artist_uid, '=')
+	->condition('subscriber_uid', $subscri->subscriber_uid, '=')
+    ->execute();
+	
+	
+		$num_updated  = db_update('musicbox_incom')
+    ->fields(array('no_of_days' => $days,))
+    ->condition('artist_uid', $artist->artist_uid, '=')
+	->condition('subscriber_uid', $subscri->subscriber_uid, '=')
+    ->execute();
+	
+			$num_updated  = db_update('musicbox_incom')
+    ->fields(array('artist_income' => $art_income,))
+    ->condition('artist_uid', $artist->artist_uid, '=')
+	->condition('subscriber_uid', $subscri->subscriber_uid, '=')
+    ->execute();
+
+	}
+	
+	}
+	
+
+ 
+//echo $diff;
+	
+
+
+
+
+
+
+}
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+function check_subscribers_artist($subid,$artid){
+	
+	$subs_query = db_select('music_box_subscrib', 's');	
+	$subs_query->fields('s', array('artist_uid'));
+	$subs_query->condition('s.subscriber_uid', $subid, '=');
+	$subs_query->condition('s.artist_uid', $artid, '=');
+	$subs_query->condition('s.artist_status', 1, '=');
+	$subs_query->condition('s.sub_status', 1, '=');
+	$bas1 = $subs_query->execute()->fetchField();
+
+if($bas1 == $artid){
+	$results = 'yes';
+}else{
+	$results = 'no';
+}
+	
+
+	
+	
+	
+return $results;
+	
+}
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+function musicbox_deactivate_user_back(){
+	$uid = arg(1);
+	user_delete($uid);
+	
+	//comments.........
+	$num_deleted = db_delete('musicbox_artist_status')
+  ->condition('cuser_id ', $uid)
+  ->execute();
+  
+  //daily payments
+  	$num_deleted = db_delete('musicbox_daily_payment')
+  ->condition('subscriber_uid ', $uid)
+  ->execute();
+  
+    //likes
+  	$num_deleted = db_delete('musicbox_like_post')
+  ->condition('user_id ', $uid)
+  ->execute();
+	 
+    //subscriber account
+  	$num_deleted = db_delete('musicbox_subscriber_account')
+  ->condition('subscriber_uid', $uid)
+  ->execute();	
+  
+      //artist subscribe
+  	$num_deleted = db_delete('music_box_artist_subscribe')
+  ->condition('sub_id', $uid)
+  ->execute(); 
+  
+	      //subscribe
+  	$num_deleted = db_delete('music_box_subscrib')
+  ->condition('subscriber_uid', $uid)
+  ->execute();
+  
+  	      //package
+  	$num_deleted = db_delete('subscriber_and_packages')
+  ->condition('subs_id', $uid)
+  ->execute();
+  
+    	      //package
+  	$num_deleted = db_delete('subscriber_and_packages')
+  ->condition('subs_id', $uid)
+  ->execute();
+	
+	 echo "<script>
+window.location.href='/musicbox.lk/user/login';
+alert('Account has deactivated successfully ');
+</script>";	
+}
+
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+
+function musicbox_api_call_back(){
+	
+
+		
+	$subscriber = $_POST['sub_id'];
+	
+	$query = db_select('users', 'm')
+      ->condition('m.uid', $_POST["sub_id"], '=')
+      ->fields('m', array('uid'))
+      ->execute();
+      $num = $query->rowCount();
+	
+	
+	custom_remove_role_from_user($subscriber, 'Subscriber'); 
+$user = user_load($subscriber);
+
+if((empty($user->roles[5])) && ($num>0) && (isset($_POST['sub_id']))){
+	$status = 'UNSUBSCRIBED';
+}else{
+	$status = 'ERRO_OCCURED';
+}
+	
+	
+	
+	
+	 $data_array = array(
+        'action' => 'SMS_UNSUBSCRIBE',
+        'sub_id' => $subscriber,
+		'status'=>$status,
+    );
+	
+	// $response is a array
+	$final = drupal_json_output($data_array);	
+	
+	return $final;
+	
+	
+}
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+
+function active_user_callback(){
+		  global $user; 
+	 global $base_url;
+	 	
+	
+
+
+
+	$user_fields = user_load(arg(1));
+	
+	$num = _get_subs_mobilenum($user_fields->uid);
+
+
+$action='PAYMENT';
+$status='RE_ACTIVE';
+$subscriberid=arg(1);
+
+
+  $curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "http://theskilledguide.com/payment_test/api/v1/re_active",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "{\r\n    \"action\": \"".$action."\",\r\n    \"subscriberid\": \"".$subscriberid."\",\r\n    \"status\": \"".$status."\"\r\n} ",
+  CURLOPT_HTTPHEADER => array(
+    "Cache-Control: no-cache",
+    "Postman-Token: 98a6371d-be34-44fd-b9fe-5e5dbe60323c"
+  ),
+));
+
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+$arr = json_decode($response, true);
+
+  
+  if($arr['statusCode']== 'SUCCESS'){
+	$uniqueId= time();		
+
+$id = db_insert("musicbox_daily_payment")
+    ->fields(array(
+	    'recode_id' => $uniqueId,
+        'subscriber_uid' => $subscriberid,
+        'subscrib_date' => date('Y-m-d h:i:s'),
+		'mobile_number' => $num,
+        'sub_status' => 1,
+        
+       
+    ))
+    ->execute();
+  
+ echo "<script>
+window.location.href='/musicbox.lk/infortainment';
+alert('Activated Successfully ! ');
+</script>";	 
+  }else{
+	 
+	  
+	  echo "<script>
+window.location.href='/musicbox.lk/user';
+alert('".$arr['message']." ');
+</script>";
+  }
+   
+}
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+function unsubscribe_user_callback(){
+	    global $user; 
+	 global $base_url;
+	 	
+	
+
+
+$data = array(
+              'subscriber' => $user_fields->uid,
+			   );
+
+		
+
+
+
+	$user_fields = user_load(arg(1));
+	
+	$num = _get_subs_mobilenum($user->uid);
+$mobilenum = '94'.$num;
+
+$action='STATE_CHANGE';
+$msisdn=$mobilenum;
+$status='UNSUBSCRIBED';
+$subscriberid=arg(1);
+
+
+
+
+
+
+
+  $curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "https://theskilledguide.com/payment_test/unsubcribed",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_FOLLOWLOCATION => true,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "{\n\"action\":\"".$action."\",\n\"msisdn\":\"".$mobilenum."\",\n\"status\":\"".$status."\",\n\"subscriberid\":\"".$subscriberid."\"}",
+  CURLOPT_HTTPHEADER => array(
+    "Cache-Control: no-cache",
+    "Content-Type: application/json",
+    "Postman-Token: f99bfdaf-a1db-44a2-bda8-e66ed83ba4f5"
+  ),
+));
+
+ 
+$response = curl_exec($curl);
+
+
+$err = curl_error($curl);
+
+curl_close($curl);
+$arr = json_decode($response, true);
+
+  
+  if($arr['status']== 'UNSUBSCRIBED'){
+	 custom_remove_role_from_user($user, 'Subscriber');
+
+	$num_updated  = db_update('musicbox_subscriber_account')
+    ->fields(array('substatus' => 2,))
+    ->condition('subscriber_uid', $subscriberid, '=')
+    ->execute();
+		$num_updated  = db_update('music_box_artist_subscribe')
+    ->fields(array('artist_status' => 3,))
+    ->condition('sub_id', $subscriberid, '=')
+    ->execute();
+
+$num_deleted = db_delete('profile')
+  ->condition('uid', $subscriberid)
+  ->execute();
+
+ echo "<script>
+window.location.href='/musicbox.lk/infortainment';
+alert('Unsubscribe successfully done ');
+</script>";	 
+  }else{
+	  //drupal_goto($base_url."/user");
+	  
+	  echo "<script>
+window.location.href='/musicbox.lk/user';
+alert('You cant Unsubscribe ');
+</script>";
+  } 
+  
+ }
+
+
+
+
+//****************************************************************************************************************
+//-----------------------------------------------------------------------------------------------------------------
+function likepost_get_total_like($nid) {
+   		$like_query = db_select('musicbox_like_post', 'p');
+		$like_query->condition('p.post_id', $nid, '='); 
+		$like_query->addExpression('COUNT(p.post_id)');
+		$like_count = $like_query->execute()->fetchField();
+   
+
+    return $like_count;
+}
+//****************************************************************************************************************
+//----------------------------------------------------------------------------------------------------------------
+function musicbox_daily_payment_back(){
+			
+	$subscriber = $_POST['sub_id'];
+	$mobile_num = $_POST['mobile'];
+	$paymentstatus = $_POST['payment_status'];
+	
+		$uniqueId= time();
+		
+		$query = db_select('users', 'm')
+      ->condition('m.uid', $_POST["sub_id"], '=')
+      ->fields('m', array('uid'))
+      ->execute();
+      $num = $query->rowCount();
+		
+if(($num>0) && (isset($_POST['sub_id']))){
+		$id = db_insert("musicbox_daily_payment")
+    ->fields(array(
+	    'recode_id' => $uniqueId,
+        'subscriber_uid' => $subscriber,
+        'subscrib_date' => date('Y-m-d h:i:s'),
+		'mobile_number' => $mobile_num,
+        'sub_status' => $paymentstatus,
+        
+       
+    ))
+    ->execute();
+	$status = "STATUS_ADDED";
+	
+}else{
+	$status = "ERROR";
+}
+	
+	
+  	    $data_array = array(
+        'action' => 'DAILY_PAYMENT',
+        'sub_id' => $subscriber,
+		'mobile' => $mobile_num,
+		'payment_status'=>$paymentstatus,
+		'status'=>$status,
+    );
+	
+	// $response is a array
+	$final = drupal_json_output($data_array);	
+	
+	return $final;
+	
+	
+}
+//---------------------------------------------------------------------------
+//************************add mood autocomplete
+function musicbox_moods_autocomplete($string){
+	$moods = array();
+
+  $query = db_select('taxonomy_term_data', 't');
+
+  $query->fields('t', array('name'));
+  $query->condition('t.name', '%' . db_like($string) . '%', 'LIKE');
+  $query->condition('t.vid', '2', '=');
+  $query->range(0, 20);
+  
+  $return = $query->execute();
+  
+  
+  foreach ($return as $row) {
+	 
+    $moods[$row->name] = check_plain($row->name); 
+  }
+
+  if (empty($moods)) {
+	 $text = 'No mood found ! <a href="/musicbox/add_mood" target="_blank"><input type="button" value="Add New Mood"></a>';
+    $moods['0'] = t($text);
+  }  
+
+  drupal_json_output($moods);
+}
+//****************************************************************
+function _get_infortatements_artist($artist) {
+	  $query = db_select('node', 'n');
+
+  $query->leftJoin('field_data_field_mobile_artist_uid', 'a', 'n.nid= a.entity_id');
+
+  $query->fields('n', array('nid'));
+  $query->condition('a.field_mobile_artist_uid_value', $artist, '=');
+   $query->orderBy('n.created', 'DESC');
+   $query_object = $query->execute()->fetchAll();
+	
+	
+	return $query_object;
+}
+
+
+//************************add artist autocomplete
+//****************************************************
+function musicbox_theme_handling_autocomplete($string) {  
+
+  $matches = array();
+
+  $query = db_select('users_roles', 'ur');
+
+  $query->leftJoin('profile', 'p', 'p.uid= ur.uid');
+  $query->leftJoin('field_data_field_artist_stage_name', 'st', 'st.entity_id= p.pid');
+  $query->fields('st', array('field_artist_stage_name_value'));
+  $query->condition('st.field_artist_stage_name_value', '%' . db_like($string) . '%', 'LIKE');
+  $query->condition('ur.rid', '4', '=');
+  $query->range(0, 20);
+  
+  $return = $query->execute();
+  
+  
+  foreach ($return as $row) {
+	 
+    $matches[$row->field_artist_stage_name_value] = check_plain($row->field_artist_stage_name_value); 
+  }
+
+  if (empty($matches)) {
+	 $text = 'No Artist found ! <a href="/musicbox.lk/add_artist" target="_blank"><input type="button" value="Add New Artist"></a>';
+    $matches['0'] = t($text);
+  }  
+
+  drupal_json_output($matches);
+}
+
+
+//***********************form handling
+function musicbox_functions_process_form_alter(&$form, &$form_state, $form_id){
+ //print '<pre>';
+//print_r($form);
+//print $form_id;
+//print '</pre>';
+//exit; 
+	
+    if ($form_id == "new_song_node_form"){
+		
+		
+		$form['field_song_artist']['und'][0]['uid']['#autocomplete_path'] = 'musicbox_theme_handling/autocomplete';
+		//$form['field_song_by_artist'][LANGUAGE_NONE][0]['nid']['#autocomplete_path'] = 'musicbox_theme_handling/autocomplete';
+       
+		$form['field_song_mood']['und'][0]['field_moods_select']['und']['#autocomplete_path'] = 'musicbox_moods/autocomplete';
+		
+		
+		$form['field_song_title'][LANGUAGE_NONE][0]['value']['#attributes']['class'][] = 'song-title-mb';
+		$form['field_song_artist'][LANGUAGE_NONE][0]['value']['#attributes']['class'][] = 'song-artist-mb';
+		$form['field_song_mood'][LANGUAGE_NONE][0]['value']['#attributes']['class'][] = 'song-moods-mb';
+		$form['field_song_upload'][LANGUAGE_NONE][0]['value']['#attributes']['class'][] = 'song-upload-mb';
+		
+		 $form['actions']['submit']['#attributes']['class'][] = 'song-submit-mb';
+        // $form['#attributes']['class'][] = 'song-submit-mb';
+		 // Add a cancel button.
+   
+		
+		
+		
+    }else if($form_id == "events_publisher_node_form"){
+		 $form['actions']['submit']['#attributes']['class'][] = 'event-publisher-submit-mb';
+	}
+
+	return $form;
+
+
+}
+
+//***********************user login redirect
+
+function musicbox_functions_process_user_login(&$edit, $account) {
+	
+  if (!isset($_POST['form_id']) || $_POST['form_id'] != 'user_pass_reset') {
+    if(in_array('backend admin', $account->roles)) {
+      $_GET['destination'] = 'admin_panel';
+    }else if(in_array('Subscriber', $account->roles)){
+		$_GET['destination'] = 'infortainment';
+	}else if(((in_array('authenticated user', $account->roles)) || (in_array('Artist', $account->roles)))&& (empty($account->roles[5]))){
+		$_GET['destination'] = 'infortainment';
+	}
+  }
+}
+
+//************************user logout
+
+ function musicbox_functions_process_user_logout($account){
+	  if (!isset($_POST['form_id']) || $_POST['form_id'] != 'user_pass_reset') {
+  if((in_array('authenticated user', $account->roles))){
+		$_GET['destination'] = 'user';
+	}
+  } 
+ }
+
+
+//************************ subscribe only one artist
+function unique_selections($auid,$cuid){
+
+    $query3 = db_select('music_box_subscrib','m');
+    $query3->fields('m');
+    $query3->condition('m.artist_uid', $auid, '='); 
+	$query3->condition('m.artist_status', 1, '='); 
+	$result3 = $query3->execute();
+	  $subcriber_id = '';
+  while ($record3 = $result3->fetchAssoc()) {
+    $subcriber_id[] = $record3;
+
+  }
+  
+ $searchnumber = $cuid;
+
+foreach($subcriber_id as $v) {
+   if ($v['subscriber_uid'] == $searchnumber) {
+      $found = true;
+   }
+}
+
+if(isset($found)){
+	
+	$results = 'yes';
+	
+}else{
+	$results = 'no';
+}
+ 	
+	
+	
+return $results;
+ 
+}
+
+
+//**************count of number of artist selected by subscriber
+function select_numof_artist($cuid){
+	
+	$q1 = db_select('music_box_subscrib', 'sa');
+	$q1->condition('subscriber_uid', $cuid);
+	$q1->addExpression('COUNT(artist_uid)');
+	$artistcount = $q1->execute()->fetchField();
+	return $artistcount;
+
+}
+
+//**************chech authenticated user
+function _check_authenticated_user($suid){
+
+    $query3 = db_select('users_roles','r');
+    $query3->fields('r');
+    $query3->condition('r.uid', $suid, '='); 
+	$result3 = $query3->execute();
+	  $subcriber_id = '';
+  while ($record3 = $result3->fetchAssoc()) {
+    $subcriber_id[] = $record3;
+
+  }
+  
+
+if(is_array($subcriber_id)){
+foreach($subcriber_id as $v) {
+   if ($v['subscriber_uid'] == $searchnumber) {
+      $found = true;
+   }
+}
+}
+if(isset($found)){
+	
+	$results = 'yes';
+	
+}else{
+	$results = 'no';
+}
+ 	
+	
+
+return $results;
+ 
+}
+//***********************************display activated bundle
+function _get_bundle_id($recode){
+	
+	
+	$bundle_query = db_select('music_box_subscrib', 's');
+	$bundle_query->fields('s', array('bundle_id'));
+	$bundle_query->condition('s.subs_ID', $recode, '=');
+    $bundle_object = $bundle_query->execute()->fetchAll();
+	
+	
+	return $bundle_object[0]->bundle_id;
+}
+//***********************************display activated bundle
+function _get_currently_updated_bundle($user_id){
+	
+	
+	$bundle_query = db_select('subscriber_and_packages', 's');
+	$bundle_query->fields('s', array('bundle_id'));
+	$bundle_query->condition('s.subs_id', $user_id, '=');
+	$bundle_query->orderBy('s.s_recodeid', 'DESC');
+    $bundle_object = $bundle_query->execute()->fetchAll();
+	
+	
+	return $bundle_object[0]->bundle_id;
+}
+//*******************************display  activated package
+function _get_currently_updated_package($user_id){
+	
+	
+	$package_query = db_select('subscriber_and_packages', 's');
+	$package_query->fields('s', array('package_id'));
+	$package_query->condition('s.subs_id', $user_id, '=');
+	$package_query->orderBy('s.s_recodeid', 'DESC');
+    $package_object = $package_query->execute()->fetchAll();
+	
+	
+	return $package_object[0]->package_id;
+}
+
+//*****************************show artist thoughts
+function show_artist_thoughts($auid){
+	
+	$thought_query = db_select('musicbox_artist_status', 'a');
+	$thought_query->fields('a', array('status','status_date_time'));
+	$thought_query->condition('a.artist_id', $auid, '=');
+	$thought_query->orderBy('a.status_date_time', 'DESC');
+	
+    $thought_object = $thought_query->execute()->fetchAll();
+	
+	return $thought_object;
+	 
+}
+
+//***********************************artist presentage
+function _get_artist_presentage($auid){
+	
+	$auser = user_load($auid) ;
+    $profile2 = profile2_load_by_user($auser->uid, 'artist');
+	$artist_presentage = $profile2->field_artist_precentage['und'][0]['value'];
+	return($artist_presentage);
+	
+}
+//***********************************subscriber amount
+function _get_amount_of_subscribers($subuid){
+	
+	$subscrib = 100;
+	return($subscrib);
+	
+}
+
+//***********************************Get total amount
+function _get_total_amount($tuid){
+	
+	$tuser = user_load($tuid) ;
+    $profile2 = profile2_load_by_user($tuser->uid, 'artist');
+	$artist_presentage = $profile2->field_artist_precentage['und'][0]['value'];
+	$subscrib = _numbert_of_subs_for_arti($tuid);
+	$artist_slab = $profile2->field_artist_slab['und'][0]['value'];
+	
+	$total_income = (($artist_presentage*$subscrib*$artist_slab)/100);
+	return($total_income);
+	
+}
+//***************************************
+
+function musicbox_artist_approve_story(){
+global $base_url;
+print arg(1);
+$node = node_load(arg(1));
+$node->status = 1;
+node_save($node);
+drupal_goto($base_url."/artist-approval");	
+}
+
+//***************************************
+function musicbox_artist_delete_story(){
+ global $base_url;
+	print arg(1);
+$node = node_load(arg(1));
+node_delete($node->nid);
+drupal_goto($base_url."/artist-approval");	
+}
+//***************************************
+function show_artist_story($auid){
+	
+	$thought_query = db_select('node', 'n');
+	$thought_query->join('field_data_field_mobile_artist_uid', 'u', 'n.nid = u.entity_id');
+	$thought_query->fields('n', array('nid'));
+	$thought_query->condition('u.field_mobile_artist_uid_value', $auid, '=');
+	$thought_query->condition('n.status', 1, '=');
+	$thought_query->orderBy('n.created', 'DESC');
+    $thought_object = $thought_query->execute()->fetchAll();
+	
+	return $thought_object[0]->nid;
+	 
+}
+//*********************************************
+function _get_music_box_artist_list_of_thoughts($subid)
+{
+	 
+	
+	$artist_query = db_select('music_box_subscrib', 'm');
+	$artist_query->distinct();
+	$artist_query->join('profile', 'p', 'm.artist_uid = p.uid');
+	
+	$artist_query->join('field_data_field_updated_infor', 'i', 'p.pid = i.entity_id');
+	$artist_query->fields('m', array('artist_uid'));
+	$artist_query->condition('m.subscriber_uid', $subid, '=');
+	$artist_query->condition('m.artist_status', 1, '=');
+    $artist_query->orderBy('i.field_updated_infor_value', 'ASC');
+	
+    $artist_object = $artist_query->execute()->fetchAll();
+
+    return $artist_object;
+	
+}
+//**************************************************************
+function _filter_change_artist_package($subid)
+{
+
+	
+	
+	$filter_query = db_select('music_box_subscrib', 'm');
+	$filter_query->distinct();
+	$filter_query->join('profile', 'p', 'm.artist_uid = p.uid');
+	
+	$filter_query->fields('m', array('artist_uid'));
+	$filter_query->condition('m.subscriber_uid', $subid, '=');
+ 
+    $filter_object = $filter_query->execute()->fetchAll();
+
+    return $filter_object;
+	
+}
+//************************************************************
+function _artist_change_in_pack($subid)
+{
+
+	
+	
+	$art_query = db_select('music_box_artist_subscribe', 'a');
+	$art_query->distinct();
+
+	$art_query->fields('a', array('s_recodeid'));
+	$art_query->condition('a.sub_id', $subid, '=');
+    $art_query->orderBy('a.sub', 'DESC');
+    $art_object = $art_query->execute()->fetchAll();
+   
+   
+
+
+    return $art_object[1]->s_recodeid;
+	
+}
+//************************************************************
+//************************************************************
+function _artist_recent_in_pack($subid)
+{
+
+	
+	
+	$art_query = db_select('music_box_artist_subscribe', 'a');
+	$art_query->distinct();
+
+	$art_query->fields('a', array('s_recodeid'));
+	$art_query->condition('a.sub_id', $subid, '=');
+    $art_query->orderBy('a.sub', 'DESC');
+    $art_object = $art_query->execute()->fetchAll();
+   
+   
+
+
+    return $art_object[0]->s_recodeid;
+	
+}
+//************************************************************
+function _get_gallery_image($auid){
+	 					
+    $gallery_query = db_select('node', 'n');
+	$gallery_query->join('field_data_field_story_image_fid', 'img', 'n.nid = img.entity_id');
+	$gallery_query->join('field_data_field_mobile_artist_uid', 'u', 'n.nid = u.entity_id');
+	$gallery_query->fields('n', array('nid'));
+	$gallery_query->condition('u.field_mobile_artist_uid_value', $auid, '=');
+	$gallery_query->condition('n.type', 'artist_mobile_view', '=');
+	$gallery_query->condition('n.status', 1, '=');
+	$gallery_query->isNotNull('img.field_story_image_fid_value');
+    $gallery_query->orderBy('n.changed', 'DESC');
+	$gallery_query->range(0,4);
+    $gallery_object = $gallery_query->execute()->fetchAll();
+	
+return $gallery_object;
+	
+}
+//------------------------------------------------------------------------
+function _display_comments($pid){
+	 					
+    $comment_query = db_select('musicbox_artist_status', 's');
+	$comment_query->fields('s', array('cuser_id','comment'));
+	$comment_query->condition('s.post_id', $pid, '=');
+    $comment_query->orderBy('s.status_date_time', 'ASC');
+	
+    $comment_object = $comment_query->execute()->fetchAll();
+	$latestcomm = array_slice($comment_object, -2, 2, true);
+return $latestcomm;
+	
+}
+//------------------------------------------------------------------------
+function _display_all_comments($pid){
+	 					
+    $comment_query = db_select('musicbox_artist_status', 's');
+	$comment_query->fields('s', array('cuser_id','comment'));
+	$comment_query->condition('s.post_id', $pid, '=');
+    $comment_query->orderBy('s.status_date_time', 'ASC');
+	
+    $comment_object = $comment_query->execute()->fetchAll();
+	
+	$comentremoved2 = array_slice($comment_object, 0, -2);
+	
+return $comentremoved2;
+	
+}
+
+//****************************************************************************
+function already_liked($pid,$cuid){
+
+    $like_query = db_select('musicbox_like_post','m');
+    $like_query->fields('m');
+    $like_query->condition('m.post_id', $pid, '='); 
+	$like_result = $like_query->execute();
+	  $subcriber_id = '';
+  while ($like_record = $like_result->fetchAssoc()) {
+    $subcriber_id[] = $like_record;
+
+  }
+  
+ $searchnumber = $cuid;
+
+foreach($subcriber_id as $v) {
+   if ($v['user_id'] == $searchnumber) {
+      $found = true;
+   }
+}
+
+if(isset($found)){
+	
+	$results = 'yes';
+	
+}else{
+	$results = 'no';
+}
+ 	
+	
+	
+return $results;
+ 
+}
+//------------------------------------------------------------------------
+function _get_subs_mobilenum($pid){
+	 					
+    $mobile_query = db_select('music_box_subscrib', 's');
+	$mobile_query->fields('s', array('mobile_number'));
+	$mobile_query->condition('s.subscriber_uid', $pid, '=');
+    $mobile_object = $mobile_query->execute()->fetchAll();
+
+return $mobile_object[0]->mobile_number;	
+
+	
+}
+//**********************************************************************************
+function fill_change_packages($cpid)  
+ {  
+ 
+
+      $output = '';  
+    
+	$change_plans_query = db_select('taxonomy_term_data', 'tax');
+	$change_plans_query->fields('tax', array('tid','name'));
+	$change_plans_query->condition('tax.vid', '7', '=');
+	$change_plans_object = $change_plans_query->execute()->fetchAll();
+      foreach ($change_plans_object as $change_packages)  
+      {  
+	  if($change_packages->tid != $cpid){
+	  
+	  $output .= '<option value="'.$change_packages->tid.'" data-show=".'.$change_packages->tid.'">'.$change_packages->name.'</option>';
+	  }
+      }  
+      return $output; 
+	  
+	  
+    
+ } 
+ //*************************************************************************************
+ function reopen_oldaccount_callback(){
+	 
+	 print 'hi';
+	 
+ }
+ //***********************************************************************************************
+ function _show_selected_artists($subuid) {
+	$art_query = db_select('music_box_subscrib', 'm');
+	$art_query->fields('m', array('artist_uid'));
+	$art_query->condition('m.subscriber_uid', $subuid, '=');
+	$art_query->condition('m.artist_status', 1, '=');
+	$art_object = $art_query->execute()->fetchAll();
+	
+	return $art_object;
+	
+}
+function _show_subscriber_list($auid) {
+	$art_query = db_select('music_box_subscrib', 'm');
+	$art_query->fields('m', array('artist_uid'));
+	$art_query->condition('m.artist_uid', $auid, '=');
+	$art_object = $art_query->execute()->fetchAll();
+	
+	return $art_object;
+	
+}
+//*****************************************************************************************
+function get_package_history($suid){
+	
+	$package_query = db_select('subscriber_and_packages', 's');
+	$package_query->fields('s', array('package_id', 'register_date', 'bundle_id'));
+	$package_query->condition('s.subs_id', $suid, '=');
+	$package_query->orderBy('s.s_recodeid', 'DESC');
+    $package_object = $package_query->execute()->fetchAll();
+	
+	
+	return $package_object;
+}
+//**************************************************************************************************
+function custom_remove_role_from_user($user, $role_name) {
+  // For convenience, we'll allow user ids as well as full user objects.
+  if (is_numeric($user)) {
+    $user = user_load($user);
+  }
+  // Only remove the role if the user already has it.
+  $key = array_search($role_name, $user->roles);
+  if ($key == TRUE) {
+    // Get the rid from the roles table.
+    $roles = user_roles(TRUE);
+    $rid = array_search($role_name, $roles);
+    if ($rid != FALSE) {
+      // Make a copy of the roles array, without the deleted one.
+      $new_roles = array();
+      foreach($user->roles as $id => $name) {
+        if ($id != $rid) {
+          $new_roles[$id] = $name;
+        }
+      }
+      user_save($user, array('roles' => $new_roles));
+    }
+  }
+}
+//********************************************************************************************************
+function get_payment_status($suid){
+	
+	$package_query = db_select('musicbox_daily_payment', 's');
+	$package_query->fields('s', array('sub_status'));
+	$package_query->condition('s.subscriber_uid', $suid, '=');
+	$package_query->orderBy('s.subscrib_date', 'DESC');
+    $package_object = $package_query->execute()->fetchAll();
+	
+	
+	return $package_object[0]->sub_status;
+	
+
+}
+//***********************************************************************************************************
+function reset_password_callback(){
+ global $base_url;	
+
+
+if(isset($_POST['submit'])){
+if(!empty($_POST['userpw'])) {
+
+
+if($_POST['userpw'] == $_POST['confirmuserpw'])
+{
+	// load user object
+$existingUser = user_load($_POST['user_id']);
+
+// update some user property
+$existingUser->pass = $_POST['userpw'];
+
+// save existing user
+user_save((object) array('uid' => $existingUser->uid), (array) $existingUser);
+		echo "<script>
+window.location.href='/musicbox.lk/user';
+alert('Sucessfully Reset Password ');
+</script>";
+	
+}else{
+	
+	echo "<script>
+window.location.href='/musicbox.lk/user';
+alert('Not sucessfully Reset Password ');
+</script>";
+}
+
+	
+//drupal_goto($base_url."/infortainment");
+  }
+
+}
+}
+//****************************************************************************
+//***********************************************************************************************************
+function resetpass_out_password_callback(){
+ global $base_url;	
+
+
+if(isset($_POST['submit'])){
+if(!empty($_POST['userpw'])) {
+
+
+if($_POST['userpw'] == $_POST['confirmuserpw'])
+{
+	// load user object
+$existingUser = user_load($_POST['user_id']);
+
+// update some user property
+$existingUser->pass = $_POST['userpw'];
+
+// save existing user
+user_save((object) array('uid' => $existingUser->uid), (array) $existingUser);
+		echo "<script>
+window.location.href='/musicbox.lk/user';
+alert('Sucessfully Reset Password ');
+</script>";
+	
+}else{
+	
+ echo "<script>
+window.location.href='".$_SERVER["HTTP_REFERER"]."';
+alert('Try Again! .. Not Sucessfully Reset Password');
+</script>";
+}
+
+	
+//drupal_goto($base_url."/infortainment");
+  }
+
+}
+}
+//****************************************************************************
+function musicbox_liked_post_callback(){
+		  global $user; 
+	 global $base_url;
+	 $uniqueId= time();
+	
+	if(isset($_POST['postid'])){
+		$pid = $_POST['postid'];
+			
+	
+	$id = db_insert("musicbox_like_post")
+    ->fields(array(
+	    'status_id' => $uniqueId,
+        'post_id' => $pid,
+        'user_id' => $user->uid,
+        'like_date_time' => date('Y-m-d h:i:s'),   
+    ))
+    ->execute();
+		
+	}
+}
+
+//****************************************************************************
+function musicbox_unlike_post_callback(){
+		  global $user; 
+	 global $base_url;
+	 $uniqueId= time();
+	
+	if(isset($_POST['postid'])){
+		$pid = $_POST['postid'];
+			
+	
+$num_deleted = db_delete('musicbox_like_post')
+  ->condition('user_id', $user->uid)
+   ->condition('post_id', $pid)
+  ->execute();
+		
+	}
+}
+
+
+//*****************************************************************************************************************************subscrib artist
+	
+
+
+function _get_artists_list() {
+	drupal_add_css(drupal_get_path('module', 'musicbox_subscribers_artists') .'/css/artist_subs.css');
+	drupal_add_css(drupal_get_path('module', 'musicbox_subscribers_artists') .'/css/chechbox.css');
+	global $user;
+	$output = ''; 
+
+    $query1 = db_select('profile', 'p');
+    $query1->fields('p', array('uid', 'pid', ));
+	$query1->distinct();
+	$query1->join('field_data_field_artist_related_bundle', 'r', 'p.pid = r.entity_id');
+	$query1->join('field_data_field_artist_stage_name', 's', 'p.pid = s.entity_id');
+	$query1->condition('p.type', 'artist','='); 
+	$query1->orderBy('s.field_artist_stage_name_value', 'ASC');
+		$result1 = $query1->execute()->fetchAll();
+	$output .= '	<div class="row">
+									
+									<div class="col-sm-12" id="show_product">';
+      foreach ($result1 as $artists) 
+      {
+		   $artist = user_load($artists->uid);
+		   $artist_profile = profile2_load_by_user($artist->uid, $type_name = 'artist') ;
+		   $artistname = $artist_profile->field_artist_name['und'][0]['value'];
+           $file = file_load($artist_profile->field_artist_profile_picture['und'][0]['fid']);
+			$uri = $file->uri;
+           $url = file_create_url($uri);
+		 
+            
+         
+$output .=
+'	<div class="col-md-3 col-xs-6 col-sm-4 col-lg-4">
+								<center><div class="circular--portrait "><img src="'.$url.'"  class=" circle "></div>
+					
+								<div class="caption text-center">'.$artistname.'</div></center>
+								</div>
+								
+								
+								';			
+      }
+	  
+$output .= '	</div></div>
+									<div class="row">
+									<input type="hidden" id="custId" name="custId" value="3487"><br>
+
+									</div>';
+		return $output;
+	
+}
+
+
+/**********************************************************************************************************************************************/
+function get_dropdown_list_items(){
+	    $output = '';  
+    
+	$packagelist_query = db_select('taxonomy_term_data', 'tax');
+	$packagelist_query->fields('tax', array('tid','name'));
+	$packagelist_query->condition('tax.vid', '4', '=');
+	$packagelist_object = $packagelist_query->execute()->fetchAll();
+      foreach ($packagelist_object as $packagelist)  
+      {  
+        
+			$output .= '<option value="'.$packagelist->tid.'" data-show=".'.$packagelist->tid.'">'.$packagelist->name.'</option>';
+	  }  
+      return $output;
+	
+}
+
+//-------------------------------------------------------------
+function selected_package1_callback(){
+		$uniqueId= time();
+		global $base_url;
+		 global $user;
+	
+
+	$subscriber = user_load($user->uid);
+	
+	if(isset($_POST['Submit'])){//to run PHP script on submit
+	
+	if(!empty($_POST['bundleid'])){
+
+$bundleid = $_POST['bundleid'];
+$info=array("bundleid"=>$bundleid,
+            "sub_id"=> $user->uid,
+		
+			);	
+			
+			$infoJSON = json_encode($info);
+	$inforencode = base64_encode($infoJSON);
+
+
+drupal_goto($base_url."/subscribe_process/1/".$inforencode);
+}
+}	
+	
+
+
+
+}
+//********************************************************subscribefunction*************************************************
+//---------------------------------------------------------------------------------------------------------------------------
+function selected_package2_callback(){
+		$uniqueId= time();
+		global $base_url;
+		 global $user;
+	
+
+	$subscriber = user_load($user->uid);
+	
+	if(isset($_POST['Submit'])){//to run PHP script on submit
+	
+	if(!empty($_POST['package2_artist'])){
+
+$artisl = implode(',', $_POST['package2_artist']);
+
+}
+}	
+$info=array("artistlist"=>$artisl,
+            "pack_id"=> 11,
+			"sub_id"=> $user->uid,
+		
+			);	
+			
+			$infoJSON = json_encode($info);
+	
+
+
+drupal_goto($base_url."/subscribe_process/1/".$infoJSON);	
+
+
+
+} 
+//------------------------------------------------------------
+function selected_package3_callback(){
+		$uniqueId= time();
+		global $base_url;
+		 global $user;
+	
+
+	$subscriber = user_load($user->uid);
+	
+	if(isset($_POST['Submit'])){//to run PHP script on submit
+	
+	if(!empty($_POST['package3_artist'])){
+
+$artisl = implode(',', $_POST['package3_artist']);
+
+}
+}	
+$info=array("artistlist"=>$artisl,
+            "pack_id"=> 12,
+			"sub_id"=> $user->uid,
+		
+			);	
+			
+			$infoJSON = json_encode($info);
+	
+
+
+drupal_goto($base_url."/subscribe_process/1/".$infoJSON);	
+
+
+
+} 
+ 
+//***************************************************************************************************************************
+//---------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------commentsave---------------------------------------------------------------
+function post_comment_artist_callback(){
+
+global $base_url;
+	$uniqueId= time();
+
+		$id = db_insert("musicbox_artist_status")
+    ->fields(array(
+	    'status_id' => $uniqueId,
+        'comment' => $_POST['me'],
+        'cuser_id' => $_POST['userid'],
+		'post_id' => $_POST['na'],
+        'status_date_time' => date('Y-m-d H-i-s'),
+        
+       
+    ))
+    ->execute();	
+	
+
+	
+}
+//*****************************************************************************************************************
+//-----------------------------------------------------------------------------------------------------------------
+function _limit_artist($subid,$packid){
+
+$q2 = db_select('music_box_subscrib', 'm');
+$q2->condition('m.subscriber_uid', $subid);
+$q2->addExpression('COUNT(m.artist_uid)');
+$bas1 = $q2->execute()->fetchField();
+
+if ($packid == 10) {
+	
+	$remain = (10 - $bas1);
+}else if($packid == 11){
+	$remain = (25 - $bas1);
+}
+
+return $remain;
+	
+}
+//********************************************************************************************
+function _numbert_of_subs_for_arti($auid){
+	
+		$subs_query = db_select('music_box_artist_subscribe', 'p');
+		$subs_query->condition('p.artist_status', 1, '='); 
+						$subs_query->condition('p.artist_id', $auid, '='); 
+						
+						$subs_query->addExpression('COUNT(p.sub_id)');
+						$subs_count = $subs_query->execute()->fetchField();
+						
+						return $subs_count;
+	
+}
+///**********************************************************************************************
+function _subscribers_subscribe_by($auid){
+	
+
+	$subs_query = db_select('music_box_artist_subscribe', 's');
+	$subs_query->fields('s', array('sub_id'));
+	$subs_query->condition('s.artist_id', $auid, '=');
+	$subs_query->condition('s.artist_status', 1, '=');
+	$subs_object = $subs_query->execute()->fetchAll();
+	
+	
+	return $subs_object;
+	
+}
+//***********************************************************************************************
+function _get_recode_id($subid){
+	$res_query = db_select('music_box_artist_subscribe', 's');
+	$res_query->fields('s', array('s_recodeid'));
+	$res_query->condition('s.sub_id', $subid, '=');
+	$res_query->condition('s.artist_status', 1, '=');
+	$res_query->orderBy('s.s_recodeid', 'ASC');
+	$res_object = $res_query->execute()->fetchAll();
+	
+	
+	return $res_object[0]->s_recodeid;
+	
+	
+}
+//***********************************************************************************************
+function _get_username_by_email($email){
+	$user_query = db_select('users', 'u');
+	$user_query->fields('u', array('uid', 'name'));
+	$user_query->condition('u.mail', '%'.$email.'%', 'LIKE');
+	$user_object = $user_query->execute()->fetchAll();
+	
+	
+	return $user_object[0]->uid;
+	
+	
+}
+//***********************************************************************************************
+function _get_end_date_of_subs($sub_id){	
+    $query1 = db_select('musicbox_daily_payment', 'p');
+		$query1->fields('p', array('subscrib_date'));
+		$query1->condition('p.sub_status', 1, '=');
+		$query1->condition('p.subscriber_uid', $sub_id, '=');
+		$query1->orderBy('p.subscrib_date', 'DESC');
+		$result1 = $query1->execute()->fetchAll();
+
+	return $result1[0]->subscrib_date;
+
+}
+///**********************************************************************************************
+function _get_package_values($btid){
+	 					
+    $bundle_query = db_select('field_data_field_assing_package_value', 's');
+	$bundle_query->fields('s', array('field_assing_package_value_tid'));
+	$bundle_query->condition('s.entity_id', $btid, '=');
+    $bundle_object = $bundle_query->execute()->fetchAll();
+
+return $bundle_object[0]->field_assing_package_value_tid;	
+
+	
+}
+
+?>

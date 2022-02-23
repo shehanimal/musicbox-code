@@ -1,0 +1,326 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_change_package_menu() {
+	$items = array();
+$items['change_package'] = array(
+        'page callback' => 'change_package_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+ $items['changepack1'] = array(
+        'page callback' => 'selected_changepack1_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+ $items['changepack2'] = array(
+        'page callback' => 'selected_changepack2_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+	
+	 $items['changepack3'] = array(
+        'page callback' => 'selected_changepack3_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	 $items['changepackage'] = array(
+        'page callback' => 'subscribe_changepackage_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+  return $items;
+ 
+}
+function subscribe_changepackage_callback(){
+	
+global $base_url;
+	  $output = '';  
+ if(isset($_POST["brand_id"]))  
+ {  
+      if($_POST["brand_id"] != '')  
+      {  
+  
+	$query1 = db_select('profile', 'p');
+    $query1->fields('p', array('uid', 'pid', ));
+	$query1->distinct();
+	$query1->join('field_data_field_artist_related_bundle', 'r', 'p.pid = r.entity_id');
+	$query1->join('field_data_field_artist_stage_name', 's', 'p.pid = s.entity_id');
+	$query1->condition('p.type', 'artist','='); 
+	$query1->condition('r.field_artist_related_bundle_tid', $_POST["brand_id"],'='); 
+	$query1->orderBy('s.field_artist_stage_name_value', 'ASC');
+		$result1 = $query1->execute()->fetchAll();
+$output .= '	<div class="row">
+									
+									<div class="col-sm-12" id="show_product">';
+      foreach ($result1 as $artists) 
+      {
+		   $artist = user_load($artists->uid);
+		   $artist_profile = profile2_load_by_user($artist->uid, $type_name = 'artist') ;
+		   $artistname = $artist_profile->field_artist_name['und'][0]['value'];
+           $file = file_load($artist_profile->field_artist_profile_picture['und'][0]['fid']);
+			$uri = $file->uri;
+           $url = file_create_url($uri);
+		 
+            
+         
+$output .=
+'	<div class="col-md-3 col-xs-6 col-sm-4 col-lg-4">
+								<center><div class="circular--portrait "><img src="'.$url.'"  class=" circle "></div>
+					
+								<div class="caption text-center">'.$artistname.'</div></center>
+								</div>
+								
+								
+								';			
+      }
+	  
+$output .= '	</div></div>
+									<div class="row">
+									<form action="'.$base_url.'/changepack1" method="post">
+									<input type="hidden" id="bundleid" name="bundleid" value="'.$_POST["brand_id"].'"><br>
+<center><input type="submit" name="Submit" value="Submit"></center>
+									</form></div>';
+      }  
+      else  
+      {  
+ 	$query1 = db_select('profile', 'p');
+    $query1->fields('p', array('uid', 'pid', ));
+	$query1->distinct();
+	$query1->join('field_data_field_artist_related_bundle', 'r', 'p.pid = r.entity_id');
+	$query1->join('field_data_field_artist_stage_name', 's', 'p.pid = s.entity_id');
+	$query1->condition('p.type', 'artist','=');  
+	$query1->orderBy('s.field_artist_stage_name_value', 'ASC');
+		$result1 = $query1->execute()->fetchAll();
+$output .= '	<div class="row">
+									
+									<div class="col-sm-12" id="show_product">';
+      foreach ($result1 as $artists) 
+      {
+		   $artist = user_load($artists->uid);
+		   $artist_profile = profile2_load_by_user($artist->uid, $type_name = 'artist') ;
+		   $artistname = $artist_profile->field_artist_name['und'][0]['value'];
+           $file = file_load($artist_profile->field_artist_profile_picture['und'][0]['fid']);
+			$uri = $file->uri;
+           $url = file_create_url($uri);
+		 
+            
+         
+$output .=
+'	<div class="col-md-3 col-xs-6 col-sm-4 col-lg-4">
+								<center><div class="circular--portrait "><img src="'.$url.'"  class=" circle "></div>
+					
+								<div class="caption text-center">'.$artistname.'</div></center>
+								</div>
+								
+								
+								';			
+      }
+	  
+$output .= '	</div></div>
+								';
+	  }
+		return $output;
+ }
+ }
+function selected_changepack1_callback(){
+	
+		$uniqueId= time();
+		global $base_url;
+		 global $user;
+	$num = _get_subs_mobilenum($user->uid);
+$mobilenum = $num;
+
+	$subscriber = user_load($user->uid);
+	
+	if(isset($_POST['Submit'])){//to run PHP script on submit
+	
+	if(!empty($_POST['bundleid'])){
+
+$bundleid = $_POST['bundleid'];
+
+}
+}	
+$oldrecid = _get_recode_id($user->uid);
+
+$info=array("bundleid"=>$bundleid,
+            "pack_id"=> 10,
+			"sub_id"=> $user->uid,
+			"phone_num"=> $mobilenum,
+			"old_rec_id"=> $oldrecid,
+			
+		
+			);	
+			
+			$infoJSON = json_encode($info);
+	$inforencode = base64_encode($infoJSON);
+		$filterartist =	_filter_change_artist_package($subscriber->uid);
+		
+		
+/*		foreach ($filterartist as $filter_art) {
+		
+		
+		print $filter_art->artist_uid;
+    $num_updated  = db_update('music_box_artist_subscribe')
+    ->fields(array('artist_status' => 2,))
+    ->condition('sub_id', $subscriber->uid, '=')
+	->condition('artist_id', $filter_art->artist_uid, '=')
+    ->execute();
+	
+		}*/
+
+drupal_goto($base_url."/subscribe_process/2/".$inforencode);
+}
+function selected_changepack2_callback(){
+	
+		$uniqueId= time();
+		global $base_url;
+		 global $user;
+	$num = _get_subs_mobilenum($user->uid);
+$mobilenum = $num;
+
+	$subscriber = user_load($user->uid);
+	
+	if(isset($_POST['Submit'])){//to run PHP script on submit
+	
+	if(!empty($_POST['change2_artist'])){
+
+$artisl = implode(',', $_POST['change2_artist']);
+
+}
+}	
+	
+
+$oldrecid = _get_recode_id($user->uid);
+
+$info=array("artistlist"=>$artisl,
+            "pack_id"=> 11,
+			"sub_id"=> $user->uid,
+			"phone_num"=> $mobilenum,
+			"old_rec_id"=> $oldrecid,
+			
+		
+			);			
+			$infoJSON = json_encode($info);
+			$filterartist =	_filter_change_artist_package($subscriber->uid);
+		
+		
+	/*	foreach ($filterartist as $filter_art) {
+		
+		
+		print $filter_art->artist_uid;
+    $num_updated  = db_update('music_box_artist_subscribe')
+    ->fields(array('artist_status' => 2,))
+    ->condition('sub_id', $subscriber->uid, '=')
+	->condition('artist_id', $filter_art->artist_uid, '=')
+    ->execute();
+	
+		}*/
+
+
+drupal_goto($base_url."/subscribe_process/2/".$infoJSON);
+}
+
+function selected_changepack3_callback(){
+	
+		$uniqueId= time();
+		global $base_url;
+		 global $user;
+	$num = _get_subs_mobilenum($user->uid);
+$mobilenum = $num;
+
+	$subscriber = user_load($user->uid);
+	
+	if(isset($_POST['Submit'])){//to run PHP script on submit
+	
+	if(!empty($_POST['change3_artist'])){
+
+$artisl = implode(',', $_POST['change3_artist']);
+
+}
+}	
+	
+$oldrecid = _get_recode_id($user->uid);
+
+$info=array("artistlist"=>$artisl,
+            "pack_id"=> 12,
+			"sub_id"=> $user->uid,
+			"phone_num"=> $mobilenum,
+			"old_rec_id"=> $oldrecid,
+			
+		
+			);			
+			$infoJSON = json_encode($info);
+			$filterartist =	_filter_change_artist_package($subscriber->uid);
+		
+		
+/*		foreach ($filterartist as $filter_art) {
+		
+		print $filter_art->artist_uid;
+    $num_updated  = db_update('music_box_artist_subscribe')
+    ->fields(array('artist_status' => 2,))
+    ->condition('sub_id', $subscriber->uid, '=')
+	->condition('artist_id', $filter_art->artist_uid, '=')
+    ->execute();
+	
+		}*/
+
+
+drupal_goto($base_url."/subscribe_process/2/".$infoJSON);
+}
+function change_package_callback() {
+    print theme('musicbox_change_package_item_theme'); 
+	
+}
+
+function musicbox_change_package_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_change_package');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_change_package_item_theme' => $base + array(
+                'template' => 'change_package',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+            ),
+    );
+	
+
+	
+	
+}
+
+function _package_comparison($cpid,$spid){
+	
+	if($cpid < $spid){
+		$status = "yes";
+		
+	}else if ($cpid > $spid){
+		$status = "no";
+	}
+	
+	return $status;
+	
+}
+
+

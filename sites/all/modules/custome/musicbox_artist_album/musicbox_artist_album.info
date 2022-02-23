@@ -1,0 +1,6 @@
+name = Musicbox Artist Album
+description = all pictuers album
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

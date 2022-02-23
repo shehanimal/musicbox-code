@@ -1,0 +1,222 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_custome_artist_menu() {
+	$items = array();
+	  
+    $items['add_artist'] = array(
+        'page callback' => 'add_artist_page',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );  
+	 $items['artist_profile_pictuer'] = array(
+        'page callback' => 'artist_profile_pictuer_page',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    ); 
+	$items['create_artist'] = array(
+        'page callback' => 'create_artist_call_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+  return $items;
+ 
+}
+ 
+function add_artist_page() {
+    print theme('add_artist_page_items');
+}
+function artist_profile_pictuer_page() {
+    print theme('artist_profile_page_items');
+}
+
+
+
+/**
+ * Implements hook_theme()
+ * @return type
+ */
+function create_artist_call_back(){
+	
+	  if (isset($_POST['create']))
+    {
+        if (!empty($_POST['artistemail']))
+        {
+		$artist_name = $_POST['artist_name'];
+		$artist_surname = $_POST['artist_surname'];
+		$stage_name = $_POST['stage_name'];
+		$artistemail = $_POST['artistemail'];
+		$dateofbirth = $_POST['dateofbirth'];
+		$artistnic = $_POST['artistnic'];
+		$artistcontact = $_POST['artistcontact'];
+		$artistaddress = $_POST['artistaddress'];
+		$genaralinfor = $_POST['genaralinfor'];
+		$artist_payment = $_POST['artist_payment'];
+		
+		
+		
+		
+			$new_user = array(
+  'name' => $artistemail,
+  'mail' => $artistemail,
+  'pass' => 'artist123',
+  'status' => 1,
+ 
+  'access' => REQUEST_TIME,
+  'roles' =>  array(
+    DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+    4 => 'Artist', // role id for custom roles varies per website
+  ),
+
+);
+
+//****************************************************************************
+$from = "web@kreativekrib.com";
+$message = "<html><body>
+
+
+	<p>Hi ".$artist_name."</p>
+
+<p>Thank you for signing up with Music Box, Please find below your user ID and temporary password.</p>
+<p><table width='200' border='1'>
+  <tr>
+    <td>Username:</td>
+    <td>".$artistemail."</td>
+  </tr>
+  <tr>
+    <td>Password:</td>
+    <td>artist123</td>
+  </tr>
+</table>
+</p>
+
+
+<p>*Once you login, you can change your password ffom the profile settings.</p>
+
+<p>Thank you</p>
+<p>-- Music Box Team --</p>
+
+
+</body></html>";	
+	
+
+	
+$to = $artistemail; // to e-mail address
+
+
+
+ 
+$params = array(
+  'subject' => "Musicbox Artist Profile login ",
+  'body' => $message,
+);
+
+// Send out the e-mail.
+drupal_mail('musicbox_custome_artist', 'information', $to, language_default(), $params, $from);
+
+//****************************************************************************
+
+
+$account = user_save(null, $new_user);
+$obj_user = user_load($account->uid) ;
+
+ 
+if(empty($profile)) {
+$profile = profile2_create(array(
+'type' => 'artist',
+'uid' => $obj_user->uid,
+));
+}
+
+
+//____________________________________________________________________________________________________
+$bDate = date("Y-m-d H:i:s", strtotime($dateofbirth));
+
+$profile->field_artist_name[LANGUAGE_NONE][0]["value"] = $artist_name;
+$profile->field_artist_surname[LANGUAGE_NONE][0]["value"] = $artist_surname;
+$profile->field_artist_stage_name[LANGUAGE_NONE][0]["value"] = $stage_name;
+$profile->field_artist_date_of_birth[LANGUAGE_NONE][0]["value"] = $bDate;
+$profile->field_artist_nic[LANGUAGE_NONE][0]["value"] = $artistnic;
+
+$profile->field_artist_contact_number[LANGUAGE_NONE][0]["value"] = $artistcontact;
+$profile->field_artist_address[LANGUAGE_NONE][0]["value"] = $artistaddress;
+$profile->field_artist_genaral_info[LANGUAGE_NONE][0]["value"] = $genaralinfor;
+$profile->field_artist_precentage[LANGUAGE_NONE][0]["value"] = $artist_payment;
+$profile->field_updated_infor[LANGUAGE_NONE][0]["value"] = 2;
+
+
+if(!empty($_POST['bundle'])) {
+// Counting number of checked checkboxes.
+$checked_count = count($_POST['bundle']);
+$bundle = $_POST['bundle'];
+print '<pre>';
+print_r($bundle);
+print $bDate.'-';
+print '</pre>';
+print $checked_count;
+// Loop to store and display values of individual checked checkbox.
+
+	 for($i=0;$i<$checked_count;$i++){
+	$profile->field_artist_related_bundle[LANGUAGE_NONE][$i]["tid"] = $bundle[$i];
+
+	
+}
+
+profile2_save($profile) ;
+		
+}
+		
+
+
+}
+
+drupal_goto($base_url."/artist_profile_pictuer/".$obj_user->uid);
+		}
+	
+	
+}
+function musicbox_custome_artist_theme() {
+
+
+	    $modulePath = drupal_get_path('module', 'musicbox_custome_artist');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+
+
+   
+    return array(
+        'add_artist_page_items' => $base + array(
+                'template' => 'add_artist',
+      
+            ),
+  
+        'artist_profile_page_items' => $base + array(
+                'template' => 'artist_profile',
+      
+            ),
+    );
+	
+	
+	
+	} 
+
+ function get_artist_bundle_list()  
+ {  
+	    $output = '';  
+    
+	$packagelist_query = db_select('taxonomy_term_data', 'tax');
+	$packagelist_query->fields('tax', array('tid','name'));
+	$packagelist_query->condition('tax.vid', '7', '=');
+	$packagelist_object = $packagelist_query->execute()->fetchAll();
+      foreach ($packagelist_object as $packagelist)  
+      { 
+        $output .= '<input type="checkbox" name="bundle[]" value="'.$packagelist->tid.'" > '.$packagelist->name.' <br>';	  
+       
+	  }  
+      return $output;
+ }

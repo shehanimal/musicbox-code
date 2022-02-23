@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+ 
+ function musicbox_artist_income_report_menu() {
+	$items = array();
+
+
+$items['artist/income'] = array(
+        'page callback' => 'artist_income_report',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+return $items;
+ 
+}
+
+function artist_income_report() {
+    print theme('musicbox_artist_income_report_theme');
+}
+
+function musicbox_artist_income_report_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_artist_income_report');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_artist_income_report_theme' => $base + array(
+                'template' => 'artist_income_report',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+					
+				
+            ),
+			
+			
+    );
+}
+
+
+
+
+

@@ -1,0 +1,52 @@
+
+name = Musicbox
+description = A flexible, recolorable theme with many regions.
+package = Core
+version = VERSION
+core = 7.x
+
+stylesheets[all][] = css/font-awesome.min.css
+stylesheets[all][] = css/bootstrap.css
+stylesheets[all][] = css/bootstrap.min.css
+stylesheets[all][] = css/style.css
+stylesheets[all][] = css/chechbox.css
+stylesheets[all][] = css/user.css
+stylesheets[all][] = css/footer.css
+stylesheets[all][] = css/top-bar.css
+stylesheets[all][] = css/container.css
+
+
+
+stylesheets[all][] = fonts/css/font-awesome.min.css
+
+scripts[] = js/jquery.min.js
+scripts[] = js/bootstrap.min.js
+scripts[] = js/custom.js
+
+
+
+
+
+regions[sidebar_first]  = First Sidebar
+regions[header]         = Header
+regions[front_welcome]  = Front Welcome
+regions[content]        = Content
+regions[content_top]    = Content Top
+regions[songsblock]    = Songs block
+regions[artist_thought] = Artist Thoughts
+regions[music_chart] = Music Charts
+regions[music_play_list]   = Play list
+regions[event_slider]   = Event Slider
+regions[video_block]   = Video Block
+regions[common_block]   = Common block
+regions[bottom_area]   = Bottom Area
+regions[footer]         = Footer
+
+settings[shortcut_module_link] = 0
+
+
+; Information added by Drupal.org packaging script on 2017-06-21
+version = "7.56"
+project = "drupal"
+datestamp = "1498069849"
+

@@ -1,0 +1,6 @@
+name = Music box Approval for Artist
+description = Approval for artist for their daily posts 
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

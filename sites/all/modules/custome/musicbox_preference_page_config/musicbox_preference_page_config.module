@@ -1,0 +1,127 @@
+<?php
+
+
+
+/**
+ * Implements hook_menu().
+ */
+ 
+ function musicbox_preference_page_config_menu() {
+	$items = array();
+
+
+
+ $items['preferance'] = array(
+        'page callback' => 'musicbox_preferencess_page',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+      $items['create_package'] = array
+  (
+    'title' => 'My form submitted values',
+    'page callback' => 'create_package_callback',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+  
+    $items['update_package'] = array
+  (
+    'title' => 'My form submitted values',
+    'page callback' => 'update_package_callback',
+    'access arguments' => array('access content'),
+    'type' => MENU_CALLBACK,
+  );
+return $items;
+ 
+}
+
+function musicbox_preferencess_page(){
+	print theme('musicbox_preference_page_config_theme');
+	
+}
+
+
+function musicbox_preference_page_config_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_preference_page_config');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_preference_page_config_theme' => $base + array(
+              
+					
+				'template' => 'preferance_page',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+            ),
+			
+			
+    );
+}
+
+/**************************************************************************************************************** */
+/**********************************************************************************************************************************************/
+function get_package_assigment_items(){
+	    $output = '';  
+    
+	$packagelist_query = db_select('taxonomy_term_data', 'tax');
+	$packagelist_query->fields('tax', array('tid','name'));
+	$packagelist_query->condition('tax.vid', '4', '=');
+	$packagelist_object = $packagelist_query->execute()->fetchAll();
+      foreach ($packagelist_object as $packagelist)  
+      {  
+        
+			$output .= '<option value="'.$packagelist->tid.'" data-show=".'.$packagelist->tid.'">'.$packagelist->name.'</option>';
+	  }  
+      return $output;
+	
+}
+/************************************************************************************************************************************* */
+
+function create_package_callback(){
+	     global $base_url;    
+
+
+if(isset($_POST['package_submit'])){
+			
+
+		$pakagename = $_POST['packagename'];
+		$packassign = $_POST['packassign'];
+  $newterm = new stdClass();
+  $newterm->name = $pakagename; // The name of the term
+  $newterm->vid = 7; // The ID of the parent vocabulary
+  $newterm->parent = 0; // This tells taxonomy that this is a top-level term
+  $newterm->field_assing_package_value[LANGUAGE_NONE][0]['tid'] = $pakageamount; 
+  taxonomy_term_save($newterm);
+drupal_goto($base_url."/preferance");
+}
+	
+}
+//*****************************************************************************************************************************************
+function update_package_callback(){
+
+				$pakagename = $_POST['packagenameedit'];
+		$pakageamount = $_POST['packassignedit'];
+		$packid = $_POST['packtermid'];
+$term = taxonomy_term_load($packid);
+$term->name = $pakagename; //change existed taxonomy term
+$term->field_assing_package_value[LANGUAGE_NONE][0]['tid'] = $pakageamount; 
+taxonomy_term_save($term);
+
+drupal_goto($base_url."/preferance");
+}

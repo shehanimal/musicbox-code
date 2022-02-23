@@ -1,0 +1,571 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_artists_subs_process_menu() {
+	$items = array();
+$items['subscribe_process/%/%'] = array(
+        'page callback' => 'subscribe_process_page',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+	
+	$items['sendig_data'] = array(
+        'page callback' => 'sendig_data_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	$items['sendig_data_change'] = array(
+        'page callback' => 'sendig_data_change_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+	
+	 $items['verify_data/%/%/%/%/%'] = array(
+        'page callback' => 'subscriber_recive_verify_data',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    ); 
+		$items['check_number'] = array(
+        'page callback' => 'check_number_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );	
+	
+		$items['process_home/%'] = array(
+        'page callback' => 'process_home_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+//process page menu	
+			$items['process_home/%'] = array(
+        'page callback' => 'process_home_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+		$items['process_add/%'] = array(
+        'page callback' => 'process_add_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+		$items['process_change/%'] = array(
+        'page callback' => 'process_change_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+		$items['process_unsubs/%'] = array(
+        'page callback' => 'process_unsubs_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+		$items['process_prof/%'] = array(
+        'page callback' => 'process_profile_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+		$items['process_logout/%'] = array(
+        'page callback' => 'process_logout_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+//////////////////////////////////////////////////////	
+  return $items;
+ 
+}
+//-------------------------------------------------------------------------------------------------------------------------
+//******************************************process menu call backs********************************************************
+//*************************************************************************************************************************
+//-------------------------------------------------------------------------------------------------------------------------
+function process_home_callback(){
+	global $base_url;
+	$sub_id=arg(1);
+
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+    drupal_goto($base_url."/infortainment");	
+}
+function process_add_callback(){
+	global $base_url;
+	$sub_id=arg(1);
+	
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+drupal_goto($base_url."/add_more");	
+}
+function process_change_callback(){
+	global $base_url;
+	$sub_id=arg(1);
+	
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+drupal_goto($base_url."/subscribe_artist");	
+}
+
+function process_unsubs_callback(){
+	global $base_url;
+	$sub_id=arg(1);
+	
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+drupal_goto($base_url."/unsubscribe");	
+}
+
+function process_profile_callback(){
+	global $base_url;
+	$sub_id=arg(1);
+	
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+drupal_goto($base_url."/user");	
+}
+function process_logout_callback(){
+	global $base_url;
+	$sub_id=arg(1);
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+drupal_goto($base_url."/user/logout");	
+}
+//------------------------------------------------------------------------------------------------------
+//****************************process menu call backs end **********************************************
+//******************************************************************************************************
+//------------------------------------------------------------------------------------------------------
+function sendig_data_change_callback(){
+	$uniqueId= time();
+	if(isset($_POST['submit_form']) and $_POST['submit_form']=='SIGN ME UP FOR NEW PACKAGE!')
+		{
+			  $bundleid = $_POST['bundleid'];
+
+    $subscriber_id = $_POST['subid'];
+	$subscriber = user_load($subscriber_id);
+	
+	
+	
+	$term = taxonomy_term_load($_POST['packid']);
+	$package_selected = $term->tid;
+	$mobile_num = $_POST['sub-mobile'];
+
+	
+			
+			
+	$query1 = db_select('profile', 'p');
+    $query1->fields('p', array('uid', 'pid', ));
+	$query1->distinct();
+	$query1->join('field_data_field_artist_related_bundle', 'r', 'p.pid = r.entity_id');
+	$query1->join('field_data_field_artist_stage_name', 's', 'p.pid = s.entity_id');
+	$query1->condition('p.type', 'artist','='); 
+	$query1->condition('r.field_artist_related_bundle_tid', $bundleid,'='); 
+	$query1->orderBy('s.field_artist_stage_name_value', 'ASC');
+	$result1 = $query1->execute()->fetchAll();
+											foreach ($result1 as $artist)
+											{
+	$id = db_insert("music_box_subscrib")
+    ->fields(array(
+	    'recode_id' => $artist->uid.$uniqueId,
+        'subs_ID' => $uniqueId,
+        'artist_uid' => $artist->uid,
+		'bundle_id' => $bundleid,
+        'subscriber_uid' => $subscriber_id,
+        'subscrib_date' => date('Y-m-d h:i:s'),
+		'sub_status' => 0,
+		'mobile_number' => $mobile_num,
+		'artist_status' => -1,
+		'verfy_meg' => 'PENDING',
+		'subscriber_line' => '1',
+       
+    ))
+    ->execute();
+
+	$id = db_insert("music_box_artist_subscribe")
+    ->fields(array(
+	    'recode_id' => $artist->uid.$uniqueId,
+        's_recodeid' => $uniqueId,
+        'artist_id' => $artist->uid,
+        'sub' => date('Y-m-d h:i:s'),
+		'artist_status' => -1,
+		'sub_id' => $subscriber_id,
+       
+    ))
+    ->execute();
+
+	
+		}
+		
+			
+drupal_goto("https://theskilledguide.com/payment_test/?subsrecodeid=".$uniqueId."&&mobile=".$mobile_num."&&subscriberid=".$subscriber_id."&&packageid=".$package_selected);	
+
+	
+}
+	
+	
+	
+}
+
+
+
+function check_number_callback(){
+	
+	
+if(!empty($_POST["username"])) {
+  $query = db_select('music_box_subscrib', 'm')
+      ->condition('m.mobile_number', $_POST["username"], '=')
+      ->fields('m', array('mobile_number'))
+      ->execute();
+      $num = $query->rowCount();
+  if($numt>0) {
+      echo "<span class='status-not-available'> Username Not Available.</span>";
+  }else{
+      echo "<span class='status-available'> Username Available.</span>";
+  }
+}
+
+}
+
+
+function sendig_data_callback(){
+$uniqueId= time();
+	
+	if(isset($_POST['submit_form']) and $_POST['submit_form']=='SIGN ME UP!')
+		{
+		
+		
+     $bundleid = $_POST['bundleid'];
+    $subscriber_id = $_POST['subid'];
+	$subscriber = user_load($subscriber_id);
+	$term = taxonomy_term_load($_POST['packid']);
+	$package_selected = $term->tid;
+	$mobile_num = $_POST['sub-mobile'];
+	if (empty($mobile_num)) {
+		  	  echo "<script>
+window.location.href='".$_SERVER["HTTP_REFERER"]."';
+alert('Enter the mobile number');
+</script>";
+		
+		
+		
+	}
+	
+	
+	else{
+	
+	 $query = db_select('musicbox_subscriber_account', 'm')
+      ->condition('m.mobile_number', $_POST['sub-mobile'], '=')
+	  ->condition('m.substatus', 1, '=')
+      ->fields('m', array('mobile_number'))
+      ->execute();
+      $num = $query->rowCount();
+	
+	
+	
+	
+	
+
+	
+  if ($num > 0) {
+  	  echo "<script>
+window.location.href='".$_SERVER["HTTP_REFERER"]."';
+alert('This Number already Taken use another number');
+</script>";
+  	 	
+  	}else{
+		
+	
+		if(!preg_match( "/^07[0-9]{8}$/", $mobile_num)) {
+
+	 
+	   	  echo "<script>
+window.location.href='".$_SERVER["HTTP_REFERER"]."';
+alert('This Number is invalid,check again');
+</script>";
+	 
+} 
+		
+			
+		else{
+		$query1 = db_select('profile', 'p');
+    $query1->fields('p', array('uid', 'pid', ));
+	$query1->distinct();
+	$query1->join('field_data_field_artist_related_bundle', 'r', 'p.pid = r.entity_id');
+	$query1->join('field_data_field_artist_stage_name', 's', 'p.pid = s.entity_id');
+	$query1->condition('p.type', 'artist','='); 
+	$query1->condition('r.field_artist_related_bundle_tid', $bundleid,'='); 
+	$query1->orderBy('s.field_artist_stage_name_value', 'ASC');
+	$result1 = $query1->execute()->fetchAll();
+											foreach ($result1 as $artist)
+											{
+	$id = db_insert("music_box_subscrib")
+    ->fields(array(
+	    'recode_id' => $artist->uid.$uniqueId,
+        'subs_ID' => $uniqueId,
+        'artist_uid' => $artist->uid,
+		'bundle_id' => $bundleid,
+        'subscriber_uid' => $subscriber_id,
+        'subscrib_date' => date('Y-m-d h:i:s'),
+		'sub_status' => 0,
+		'mobile_number' => $mobile_num,
+		'artist_status' => 1,
+		'verfy_meg' => 'PENDING',
+		'subscriber_line' => '1',
+       
+    ))
+    ->execute();
+
+	$id = db_insert("music_box_artist_subscribe")
+    ->fields(array(
+	    'recode_id' => $artist->uid.$uniqueId,
+        's_recodeid' => $uniqueId,
+        'artist_id' => $artist->uid,
+        'sub' => date('Y-m-d h:i:s'),
+		'artist_status' => 1,
+		'sub_id' => $subscriber_id,
+       
+    ))
+    ->execute();
+
+	
+		}
+		
+	
+	
+drupal_goto("https://theskilledguide.com/payment_test/?subsrecodeid=".$uniqueId."&&mobile=".$mobile_num."&&subscriberid=".$subscriber_id."&&packageid=".$package_selected);	
+
+	}
+	}
+	} ////empty field validation	
+}
+	
+
+
+}
+
+//*********************** when receive data from dialog 
+function subscriber_recive_verify_data(){
+	$acknowledge_msg = arg(4);
+$status_msg = arg(5);
+	if($acknowledge_msg == 1){
+		$subscrib_recode_id = arg(1);
+		$subscriber_id = arg(2);
+
+		$subscriber = user_load($subscriber_id);
+		$term = taxonomy_term_load(arg(3));
+		$package_selected = $term->name;
+		$bundle_id = _get_bundle_id($subscrib_recode_id);
+		
+		
+	
+	$term = taxonomy_term_load(arg(3));
+
+	$num_updated  = db_update('music_box_artist_subscribe')
+    ->fields(array('artist_status' => 1,))
+    ->condition('s_recodeid', $subscrib_recode_id, '=')
+    ->execute();
+	
+		$num_updated  = db_update('music_box_subscrib')
+    ->fields(array('artist_status' => 1,))
+    ->condition('subs_ID', $subscrib_recode_id, '=')
+    ->execute();
+	
+$num_updated  = db_update('music_box_subscrib')
+    ->fields(array('sub_status' => 1,))
+    ->condition('subs_ID', $subscrib_recode_id, '=')
+    ->execute();
+
+$num_updated  = db_update('music_box_subscrib')
+    ->fields(array('verfy_meg' => $status_msg,))
+    ->condition('subs_ID', $subscrib_recode_id, '=')
+    ->execute();
+//update 	
+$ear_recode_id = _artist_change_in_pack($subscriber_id);
+if($ear_recode_id != NULL){
+	$num_updated  = db_update('subscriber_and_packages')
+    ->fields(array('status' => 2,))
+    ->condition('s_recodeid', $ear_recode_id, '=')
+    ->execute();
+	
+	$num_updated  = db_update('music_box_subscrib')
+    ->fields(array('artist_status' => 2,))
+    ->condition('subs_ID', $ear_recode_id, '=')
+    ->execute();
+	
+	$num_updated  = db_update('music_box_artist_subscribe')
+    ->fields(array('artist_status' => 2,))
+    ->condition('s_recodeid', $ear_recode_id, '=')
+    ->execute();
+	
+	$num_updated  = db_update('music_box_subscrib')
+    ->fields(array('verfy_meg' => 'OLDSUBSCRIBED',))
+    ->condition('subs_ID', $ear_recode_id, '=')
+    ->execute();
+	
+		$num_updated  = db_update('music_box_subscrib')
+    ->fields(array('sub_status' => 3,))
+    ->condition('subs_ID', $ear_recode_id, '=')
+    ->execute();
+}	
+
+
+
+	$uniqueId= time();
+	
+	$id = db_insert("subscriber_and_packages")
+    ->fields(array(
+	    's_recodeid' => $subscrib_recode_id,
+        'subs_id' => $subscriber_id,
+        'package_id' => arg(3),
+        'register_date' => date('Y-m-d h:i:s'),
+		'status' => 1,
+		'bundle_id' => $bundle_id,
+        
+       
+    ))
+    ->execute();
+	
+	/*assing role and create profile*/
+	$status = _check_authenticated_user($subscriber_id);
+
+	
+	if($status == 'no'){
+		
+	$role_name = 'Subscriber'; // The name of the role to add.
+	
+	if ($role = user_role_load_by_name($role_name)) {
+	user_multiple_role_edit(array($subscriber_id), 'add_role', $role->rid);}
+  
+  if(empty($profile)) {
+	$profile = profile2_create(array(
+	'type' => 'subscriber',
+	'uid' => $subscriber->uid,
+	));
+	}
+ 
+ 
+    $email_query = db_select('music_box_subscrib', 's');
+	$email_query->fields('s', array('mobile_number'));
+	$email_query->condition('s.subs_ID', $subscrib_recode_id, '=');
+	$email_object = $email_query->execute()->fetchAll();
+	
+
+ 
+	$profile->field_subscriber_name[LANGUAGE_NONE][0]["value"] = $subscriber->name;
+	$profile->field_subscriber_email[LANGUAGE_NONE][0]["value"] = $subscriber->mail;
+	$profile->field_subscriber_phone_number[LANGUAGE_NONE][0]["value"] = $email_object[0]->mobile_number; 
+  
+
+    profile2_save($profile) ;
+	
+	
+	
+	//subscriber account details
+	
+		$id = db_insert("musicbox_subscriber_account")
+    ->fields(array(
+	    'recode_id' => $subscriber->uid.$uniqueId,
+        'subscriber_uid' => $subscriber->uid,
+        'subs_email' => $subscriber->mail,
+		'mobile_number' => $email_object[0]->mobile_number,
+        'date_subscriber' => date('Y-m-d h:i:s'),
+		'substatus' => 1,
+        
+       
+    ))
+    ->execute();
+	
+
+	}
+	
+	}
+	else if($acknowledge_msg == 0){
+		
+		drupal_set_message('error');
+	}
+	
+	
+	$num_deleted = db_delete('music_box_artist_subscribe')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+    $num_deleted = db_delete('music_box_subscrib')
+                 ->condition('artist_status', -1, '=')
+                 ->execute();
+	
+	drupal_goto($base_url."/infortainment");
+
+}
+//****************************************************************************************************************************************
+
+function subscribe_process_page() {
+    print theme('musicbox_subscribe_process_page_item'); 
+	
+}
+
+function musicbox_artists_subs_process_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_artists_subs_process');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_subscribe_process_page_item' => $base + array(
+                'template' => 'artists_subs_process',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+            ),
+    );
+	
+
+	
+	
+}
+
+
+

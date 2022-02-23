@@ -1,0 +1,6 @@
+name = Musicbox Uplode Window
+description = four upload windows for artist
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

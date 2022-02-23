@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_unsubscribe_subscriber_menu() {
+	$items = array();
+$items['unsubscribe'] = array(
+        'page callback' => 'musicbox_unsubscribe_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+ 
+	
+
+
+  return $items;
+ 
+}
+//-------------------------------------------------------------
+
+function musicbox_unsubscribe_callback() {
+    print theme('musicbox_unsubscribe_subscriber_item_theme'); 
+	
+}
+
+function musicbox_unsubscribe_subscriber_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_unsubscribe_subscriber');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_unsubscribe_subscriber_item_theme' => $base + array(
+                'template' => 'unsubscribe_subscriber',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+            ),
+    );
+	
+
+	
+	
+}
+

@@ -1,0 +1,6 @@
+name = Musicbox Artist Income Report
+description = page of artist income report 
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

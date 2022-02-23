@@ -1,0 +1,170 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_subscribers_artists_menu() {
+	$items = array();
+$items['subscribe_artist'] = array(
+        'page callback' => 'subscribe_artist_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	 $items['packageassignment'] = array(
+        'page callback' => 'subscribe_packageassignment_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+ 
+
+
+  return $items;
+ 
+}
+
+
+function subscribe_artist_callback() {
+    print theme('musicbox_subscribers_artists_item_theme'); 
+	
+}
+
+function musicbox_subscribers_artists_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_subscribers_artists');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_subscribers_artists_item_theme' => $base + array(
+                'template' => 'subscribers_artists',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+            ),
+    );
+	
+
+	
+	
+}
+
+ function fill_main_category()  
+ {  
+	    $output = '';  
+    
+	$packagelist_query = db_select('taxonomy_term_data', 'tax');
+	$packagelist_query->fields('tax', array('tid','name'));
+	$packagelist_query->condition('tax.vid', '7', '=');
+	$packagelist_object = $packagelist_query->execute()->fetchAll();
+      foreach ($packagelist_object as $packagelist)  
+      {  
+        $output .= '<option value="'.$packagelist->tid.'">'.$packagelist->name.'</option>'; 
+			
+	  }  
+      return $output;
+ }  
+//*******************************************************************************************
+
+ function subscribe_packageassignment_callback()  {
+global $base_url;
+	  $output = '';  
+ if(isset($_POST["brand_id"]))  
+ {  
+      if($_POST["brand_id"] != '')  
+      {  
+  
+	$query1 = db_select('profile', 'p');
+    $query1->fields('p', array('uid', 'pid', ));
+	$query1->distinct();
+	$query1->join('field_data_field_artist_related_bundle', 'r', 'p.pid = r.entity_id');
+	$query1->join('field_data_field_artist_stage_name', 's', 'p.pid = s.entity_id');
+	$query1->condition('p.type', 'artist','='); 
+	$query1->condition('r.field_artist_related_bundle_tid', $_POST["brand_id"],'='); 
+	$query1->orderBy('s.field_artist_stage_name_value', 'ASC');
+		$result1 = $query1->execute()->fetchAll();
+$output .= '	<div class="row">
+									
+									<div class="col-sm-12" id="show_product">';
+      foreach ($result1 as $artists) 
+      {
+		   $artist = user_load($artists->uid);
+		   $artist_profile = profile2_load_by_user($artist->uid, $type_name = 'artist') ;
+		   $artistname = $artist_profile->field_artist_name['und'][0]['value'];
+           $file = file_load($artist_profile->field_artist_profile_picture['und'][0]['fid']);
+			$uri = $file->uri;
+           $url = file_create_url($uri);
+		 
+            
+         
+$output .=
+'	<div class="col-md-3 col-xs-6 col-sm-4 col-lg-4">
+								<center><div class="circular--portrait "><img src="'.$url.'"  class=" circle "></div>
+					
+								<div class="caption text-center">'.$artistname.'</div></center>
+								</div>
+								
+								
+								';			
+      }
+	  
+$output .= '	</div></div>
+									<div class="row">
+									<form action="'.$base_url.'/selected1" method="post">
+									<input type="hidden" id="bundleid" name="bundleid" value="'.$_POST["brand_id"].'"><br>
+<center><input type="submit" name="Submit" value="Submit"></center>
+									</form></div>';
+      }  
+      else  
+      {  
+ 	$query1 = db_select('profile', 'p');
+    $query1->fields('p', array('uid', 'pid', ));
+	$query1->distinct();
+	$query1->join('field_data_field_artist_related_bundle', 'r', 'p.pid = r.entity_id');
+	$query1->join('field_data_field_artist_stage_name', 's', 'p.pid = s.entity_id');
+	$query1->condition('p.type', 'artist','=');  
+	$query1->orderBy('s.field_artist_stage_name_value', 'ASC');
+		$result1 = $query1->execute()->fetchAll();
+$output .= '	<div class="row">
+									
+									<div class="col-sm-12" id="show_product">';
+      foreach ($result1 as $artists) 
+      {
+		   $artist = user_load($artists->uid);
+		   $artist_profile = profile2_load_by_user($artist->uid, $type_name = 'artist') ;
+		   $artistname = $artist_profile->field_artist_name['und'][0]['value'];
+           $file = file_load($artist_profile->field_artist_profile_picture['und'][0]['fid']);
+			$uri = $file->uri;
+           $url = file_create_url($uri);
+		 
+            
+         
+$output .=
+'	<div class="col-md-3 col-xs-6 col-sm-4 col-lg-4">
+								<center><div class="circular--portrait "><img src="'.$url.'"  class=" circle "></div>
+					
+								<div class="caption text-center">'.$artistname.'</div></center>
+								</div>
+								
+								
+								';			
+      }
+	  
+$output .= '	</div></div>
+								';
+	  }
+		return $output;
+ }
+ }

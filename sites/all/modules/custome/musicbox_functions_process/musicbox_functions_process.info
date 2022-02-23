@@ -1,0 +1,6 @@
+name = Musicbox Functions Process
+description = implemet all the function which needs in site
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

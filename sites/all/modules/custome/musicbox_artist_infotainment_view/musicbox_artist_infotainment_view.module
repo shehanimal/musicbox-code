@@ -1,0 +1,203 @@
+		<?php 
+
+
+
+function musicbox_artist_infotainment_view_menu()
+{
+
+      $menu['infortainment'] = array(
+        'page callback' => 'musicbox_artist_mobile_platform',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+  
+  return $menu;
+}
+
+function musicbox_artist_mobile_platform(){
+	 print theme('musicbox_artist_mobileview_page_theme');
+			
+
+}
+
+
+function musicbox_artist_infotainment_view_theme(){
+	
+	$modulePath = drupal_get_path('module', 'musicbox_artist_infotainment_view');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_artist_mobileview_page_theme' => $base + array(
+                'template' => 'artist_infotainment_temp',
+                'variables' => array(
+                    
+
+                    'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    ),
+            ),
+    );
+	
+}
+
+function _show_poster_image($auid){
+	 					
+    $imin_query = db_select('node', 'n');
+	$imin_query->join('field_data_field_story_image_fid', 'img', 'n.nid = img.entity_id');
+	$imin_query->join('field_data_field_mobile_artist_uid', 'u', 'n.nid = u.entity_id');
+	$imin_query->fields('n', array('nid'));
+	$imin_query->condition('u.field_mobile_artist_uid_value', $auid, '=');
+	$imin_query->condition('n.type', 'artist_mobile_view', '=');
+	$imin_query->condition('n.status', 1, '=');
+	$imin_query->isNotNull('img.field_story_image_fid_value');
+    $imin_query->orderBy('n.changed', 'DESC');
+    $imin_object = $imin_query->execute()->fetchAll();
+	
+return $imin_object[0]->nid;
+	
+}
+
+function _show_video_info($auid){
+	 					
+    $vidin_query = db_select('node', 'n');
+	$vidin_query->join('field_data_field_story_video_image', 'vid', 'n.nid = vid.entity_id');
+	$vidin_query->join('field_data_field_mobile_artist_uid', 'u', 'n.nid = u.entity_id');
+	$vidin_query->fields('n', array('nid'));
+	$vidin_query->condition('u.field_mobile_artist_uid_value', $auid, '=');
+	$vidin_query->condition('n.type', 'artist_mobile_view', '=');
+	$vidin_query->condition('n.status', 1, '=');
+	$vidin_query->isNotNull('vid.field_story_video_image_value');
+    $vidin_query->orderBy('n.changed', 'DESC');
+    $vidin_object = $vidin_query->execute()->fetchAll();
+	
+return $vidin_object[0]->nid;
+	
+}
+
+function _show_today_motivation_info($auid){
+	 					
+    $moti_query = db_select('node', 'n');
+	$moti_query->join('field_data_field_today_motivation', 'moti', 'n.nid = moti.entity_id');
+	$moti_query->join('field_data_field_mobile_artist_uid', 'u', 'n.nid = u.entity_id');
+	$moti_query->fields('n', array('nid'));
+	$moti_query->condition('u.field_mobile_artist_uid_value', $auid, '=');
+	$moti_query->condition('n.type', 'artist_mobile_view', '=');
+	$moti_query->condition('n.status', 1, '=');
+	$moti_query->isNotNull('moti.field_today_motivation_value');
+    $moti_query->orderBy('n.changed', 'DESC');
+    $moti_object = $moti_query->execute()->fetchAll();
+	
+return $moti_object[0]->nid;
+	
+}
+
+function _show_artist_learn_info($auid){
+	 					
+    $learn_query = db_select('node', 'n');
+	$learn_query->join('field_data_field_artist_learn', 'ler', 'n.nid = ler.entity_id');
+	$learn_query->join('field_data_field_mobile_artist_uid', 'u', 'n.nid = u.entity_id');
+	$learn_query->fields('n', array('nid'));
+	$learn_query->condition('u.field_mobile_artist_uid_value', $auid, '=');
+	$learn_query->condition('n.type', 'artist_mobile_view', '=');
+	$learn_query->condition('n.status', 1, '=');
+	$learn_query->isNotNull('ler.field_artist_learn_value');
+    $learn_query->orderBy('n.changed', 'DESC');
+    $learn_object = $learn_query->execute()->fetchAll();
+	
+return $learn_object[0]->nid;
+	
+}
+
+function _show_artist_random_thoughts($auid){
+	 					
+    $random_query = db_select('node', 'n');
+	$random_query->join('field_data_field_artist_random_thought', 'ran', 'n.nid = ran.entity_id');
+	$random_query->join('field_data_field_mobile_artist_uid', 'u', 'n.nid = u.entity_id');
+	$random_query->fields('n', array('nid'));
+	$random_query->condition('u.field_mobile_artist_uid_value', $auid, '=');
+	$random_query->condition('n.type', 'artist_mobile_view', '=');
+	$random_query->condition('n.status', 1, '=');
+	$random_query->isNotNull('ran.field_artist_random_thought_value');
+    $random_query->orderBy('n.created', 'DESC');
+    $random_object = $random_query->execute()->fetchAll();
+	
+return $learn_object[0]->nid;
+	
+}
+
+
+
+
+function _filter_artist($artid){
+	
+	$filter_query = db_select('node', 'n');
+	$filter_query->join('field_data_field_mobile_artist_uid', 'u', 'n.nid = u.entity_id');
+	$filter_query->fields('u', array('field_mobile_artist_uid_value'));
+	$filter_query->condition('u.field_mobile_artist_uid_value', $artid, '=');
+	$filter_query->condition('n.type', 'artist_mobile_view', '=');
+	$filter_query->condition('n.status', 1, '=');
+    $filter_query->orderBy('n.created', 'DESC');
+    $filter_object = $filter_query->execute()->fetchAll();
+	
+	//print_r($filter_object);
+	return $filter_object[0]->field_mobile_artist_uid_value;
+	
+	
+}
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

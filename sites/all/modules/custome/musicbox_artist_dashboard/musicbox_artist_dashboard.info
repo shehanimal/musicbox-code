@@ -1,0 +1,6 @@
+name = Music box Artist Dashboard
+description = implement artist dashboard which artist can update daily status 
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

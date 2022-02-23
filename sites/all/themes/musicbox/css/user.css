@@ -1,0 +1,176 @@
+.userprofileimage {
+	position: relative;
+	width: 100%;
+	max-width: 400px;
+}
+input#edit-profile-pic-upload-button {
+    display: none;
+}
+.input#profpiceditsubmit {
+    padding-right: 2%;
+    border-radius: 5px;
+    background-color: #2d2a2a;
+    border: 1px solid feab3e;
+    padding-left: 2%;
+    color: #feab3e;
+    margin-top: 5%;
+}
+.dropdown-menu.user{
+margin: 2px -247px 0;}
+
+.editbtn {
+	font-weight: 700;
+	font-family: 'Open Sans', sans-serif;
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	-ms-transform: translate(-50%, -50%);
+	background-color: #eee;
+	color: #000;
+	font-size: 13px;
+	padding: 6px 60px;
+	border: none;
+	cursor: pointer;
+	border-radius: 5px;
+	text-align: center;
+}
+
+.editbtn:hover{
+	color:#000;
+}
+img.userimage {
+    margin-top: 18%;
+}
+input#email {
+    width: 68%;
+}
+.btn-default {
+    color: #feab3e;
+    background-color:#3a3a3c;
+    border-color: #FEAB3E;
+}
+.title-modal{
+	color: #feab3e;
+	font-family: 'Open Sans', sans-serif;
+	font-weight:100;
+}
+.btn-default:hover{
+    color: #feab3e;
+    background-color: #3a3a3c;
+    border-color: #FEAB3E;
+}
+button.btn.btn-default.resetpwd {
+    margin-bottom: 2%;
+}
+
+.userimage{
+	width:100%;
+	margin-top:2%;
+	border: 1px solid #8bb142;
+    padding: 5px;
+	display: block;
+    margin-left: auto;
+    margin-right: auto;
+	border-radius:10%;
+}
+.username{
+    color:#FEAB3E;
+	
+    font-family: 'Open Sans', sans-serif;
+    font-weight:100;
+}
+h6.Pack-text {
+    color: #fff;
+    text-align: center;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.force-overflow-user {
+padding-left: 9px;
+}
+#style-user-scroll::-moz-appearance{
+-moz-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+background-color: #fff;
+border-radius: 10px;
+}
+#style-user-scroll::-webkit-scrollbar-track {
+-webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+background-color: #fff;
+border-radius: 10px;
+}
+#style-user-scroll::-webkit-scrollbar {
+width: 10px;
+background-color: #fff;
+}
+#style-user-scroll::-webkit-scrollbar-thumb {
+background-color: #666666;
+border-radius: 10px;
+background-image: -webkit-linear-gradient(90deg, rgba(0, 0, 0, .2) 25%, transparent 25%, transparent 50%, rgba(0, 0, 0, .2) 50%, rgba(0, 0, 0, .2) 75%, transparent 75%, transparent) 
+}
+.panel.panel-default.panelnew{
+background-color: #2d2a2a;
+border-color: #2d2a2a;
+}
+.scrollbar-user {
+height:640px;
+overflow-y: scroll;
+/* margin-bottom: 25px; */
+}
+
+.upload-st-user{
+color: #f1f3f2;
+font-size: 19px;
+font-family: 'Open Sans', sans-serif;
+margin-bottom: 5%;
+margin-top: 5%;
+margin-left: 2%;
+text-align: left;
+border-radius: 11%;
+font-weight: 700;
+}
+
+/********************************************* @media ***************************************/
+@media (min-width: 500px){
+
+
+.userimage{
+width:70%;
+margin-top:5%;
+}
+
+}
+@media (min-width: 1024px){
+
+
+.table {
+width: 68%;}
+
+
+}
+
+
+@media (max-width:767px) and (min-width:426px) {
+
+.upload-st-user {
+font-size: 15px;
+}
+
+}
+
+@media (min-width:800px){
+
+.upload-st-user  {
+font-size: 20px;
+}
+
+
+}
+
+@media (max-width:321px){
+
+button.btn.btn-default.resetpwd {
+font-size: 9px;
+}
+}
+

@@ -1,0 +1,6 @@
+name = Musicbox Change Package
+description = Subscriber's all process implementaton implementation
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

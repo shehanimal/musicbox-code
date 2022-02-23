@@ -1,0 +1,672 @@
+
+body 
+{
+	
+	background-color:#F2F3F4  ;
+}
+.login
+{
+	margin-top:182px;
+}
+
+.par-footer
+{
+	background-color:#58595b;
+	color:#ffffff;	
+	margin-bottom:6px;
+}
+.copyright
+{
+	color:#ffffff; 
+	margin-top:237px;
+	font-size:11px;
+}
+.logo
+{
+	margin-left:45px;
+	width:50px;
+	height:50px;
+}
+
+.logimage
+{
+	width: 448px;   
+	margin-left: 15px;
+}
+.size
+{	
+	margin-left: 208px;
+	font-size:14px;
+}
+
+.submit
+{	
+	float: right;
+    padding: 10px 41px;
+    background-color: #4169E1;
+    color: #ffffff;
+	margin-bottom: 19px;
+	border: 1px;
+}
+
+.eventbtn
+{
+	float: left;
+    padding: 10px 41px;
+    background-color: #4169E1;
+    color: #ffffff;
+	margin-bottom: 19px;
+	border: 1px;
+	margin-left:160px;
+}
+
+.event-btn-save
+{
+	margin-left: 335px;
+	float: left;
+    padding: 10px 41px;
+    background-color: #4169E1;
+    color: #ffffff;
+	margin-bottom: 19px;
+	border: 1px;
+}
+#inputInfo
+{
+	height:150px;
+}
+
+.margin-NIC
+{
+	margin-left:-39px;
+}
+
+.sub-loginheader
+{
+	color: #58595b;
+}
+
+.page-header
+ {
+	color: #58595b;
+	border-bottom: 3px solid #2a3990;
+	font-size: 19px;
+}
+
+.sub-header {
+	padding-bottom: 10px;
+	
+}
+
+.page-subheader
+{ 	
+padding-bottom: 20px;
+    margin: 35px 0 20px;
+	border-bottom:1px solid #000000;
+}
+
+.navbar-fixed-top {
+	border: 0;
+}
+
+.sidebar 
+{
+	display: none;
+}
+
+.topnav 
+{
+	overflow: hidden;
+	
+}
+
+.topnav a {
+	float: left;
+	display: block;
+	text-align: center;
+	padding: 14px 21px;
+	text-decoration: none;
+	font-size: 14px;
+}
+
+.topnav a :hover
+{
+	color:#ffffff;
+}
+
+.topnav .icon
+ {
+	display: none;
+	color:#ffffff;	
+}
+
+.fisrt-link:hover
+{
+	color:#ffffff;
+}
+
+.fisrt-link
+{
+	margin-top: -26px;
+	color:#ffffff !important;
+}
+
+
+.top-title
+{
+	color:#e09135 !important;
+}
+
+.top-title:hover
+{
+	color:#e09135;
+}
+
+p{
+	
+	margin-top: -37px;
+}
+
+.img
+{
+	float:right;
+}
+
+.main 
+{
+	top:-29px;
+	padding: 20px;
+}
+
+.placeholders 
+{
+	margin-bottom: 30px;
+	text-align: center;
+}
+
+.placeholders h4 
+{
+	margin-bottom: 0;
+	
+}
+
+.placeholder img 
+{
+	display: inline-block;
+	border-radius: 50%;
+	float:left;
+	margin-top:50px;
+}
+
+.border-right
+{
+	border-right:1px solid #a7a9ac;
+}
+
+.float-right
+{	
+	float:left;
+	margin-top:-34px;
+	margin-left: 51px;
+}
+
+.font
+{
+	font-size:12px;
+}
+
+.padding
+{	
+	color:#1a76bc;
+	font-size:17px;
+	margin-top:-16px;
+}
+
+.padding-bottom
+{
+	padding-bottom:50px;
+}
+
+.btn-warning 
+{
+	color: #fff;
+	background-color: #f15a29;
+	border-color: #f15a29;
+}
+
+.nav-side-menu 
+{
+	
+	background-color:#58595b;
+	top: 0;
+	padding-left: 185px;
+	
+}
+
+.margin-left
+{
+	margin-left:-35px;
+}
+
+.form-control
+ {
+	display: block;
+	width: 100%;
+	height: 34px;}
+	
+.align
+{
+	margin-top: 163px;
+}
+
+.container
+{
+	margin-top: 128px;
+}
+
+.login-btn
+{
+	width:15%;
+}
+
+.upload-btn
+{   
+	margin-top: 21px;
+    border-radius: 25px;
+    padding: 15px 30px;
+    color: #ffffff;
+    background-color: #a7a9ac;
+    margin-left: -53px;
+    border-style: none;
+	
+}
+
+
+
+
+
+
+
+	@media (min-width: 768px) {
+	.nav-side-menu
+	{
+		position: fixed;
+		top: 0px;
+		bottom: 0;
+		left: 0;
+		z-index: 1000;
+		display: block;
+		padding: 20px;
+		overflow-x: hidden;
+		overflow-y: auto;
+		background-color: #;
+		
+	}
+	
+	.topnav a
+	{
+		padding: 14px 25px;
+	}
+	
+	.top-title:active
+	{
+		color:#ffffff;
+	}
+	
+}
+
+	@media (max-width: 768px) {
+	
+	.sub-loginheader
+{
+	margin-left:-13px;
+	margin-top: -143px;
+}
+	
+		.submit
+{	   
+	margin-top: 200px;
+    float: right;
+    padding: 10px 41px;
+    background-color: #4169E1;
+    color: #ffffff;
+    margin-bottom: 19px;
+    border: 1px;
+	margin-right:10px;
+}
+	   	.margin-date
+		{
+		    width: 180px;
+		}
+		.margin-NIC
+		{
+			margin-top:-32px;
+			margin-left:300px;
+			width:150px;
+		}
+		.margin-lable
+		{
+	    margin-top: 0px;
+		margin-right: 100px;
+		margin-left: 1px;
+		}
+	
+		.border-right
+		{
+		border-right:0px;
+		}
+		
+		.upload-btn 
+		{
+	    float: right;
+		margin-right: 6px;
+		padding: 10px;
+		}
+	
+		.topnav a 
+		{
+		padding: 14px 12px;
+		}
+		
+		.topnav a:not(:first-child) 
+		{
+		display: none;
+		}
+		
+		.topnav a.icon
+		{
+		float: right;
+		display: block;
+		margin-right: -16px;   
+		}
+		
+		.topnav.responsive 
+		{	
+		position: relative;
+		}
+		
+		.topnav.responsive .icon 
+		{
+		position: absolute;
+		right: 0;
+		top: 0;
+		}
+		
+		.topnav.responsive a 
+		{
+		float: none;
+		display: block;
+		text-align: left;
+		margin-left: -13px;
+		}
+	
+	
+		.margin-left
+		{
+			margin-left:0px;
+		}
+	
+		.btn
+		{
+		padding-left: 5px;
+	    font-size: 11px;
+		padding-right: 10px;
+		width: 129px;
+		margin-bottom: 8px;}
+	
+		.float-right 
+		{
+		
+		font-size: 10px;
+		}
+		
+		.main
+		{
+		top: -29px;
+		padding: 20px;
+		
+		}
+		}
+						
+	@media (max-width:1024px) {
+		.topnav a 
+		{
+		padding: 14px 14px;
+		}
+		
+	.upload-btn
+	{      
+	margin-left: -97px;
+	
+	}
+	.submit
+{	
+	float: right;
+    padding: 10px 41px;
+    background-color: #4169E1;
+    color: #ffffff;
+	margin-bottom: 19px;
+	border: 1px;
+}
+				.eventbtn
+	{
+		
+	    margin-top: 10px;
+		padding: 10px 41px;
+		background-color: #4169E1;
+		color: #ffffff;
+		margin-bottom: 19px;
+		border: 1px;
+		margin-left: 175px;
+	}
+	.event-btn-save
+	{
+		 margin-top: 10px;
+		padding: 10px 41px;
+		background-color: #4169E1;
+		color: #ffffff;
+		margin-bottom: 19px;
+		border: 1px;
+		
+		    margin-left: 60px;
+	}
+
+
+	}
+	
+	
+	@media (max-width:320px) {
+
+		.sub-loginheader
+		{
+		font-size:16px;
+		margin-top: -143px;
+		}
+		.margin-date
+		{
+		    width: 150px;
+		}
+		.margin-NIC
+		{
+			margin-top:10px;
+			
+			width:150px;
+		}
+		.margin-lable
+		{
+	    margin-top: 55px;
+		margin-right: 11px;
+		margin-left: -228px;
+		padding-left:27px;}
+
+		
+		.upload-btn
+		{  
+		margin-left: 37px;
+		margin-top: 22px;
+		margin-right: 17px;
+		float: none;
+		}
+	
+		.img
+		{
+		margin-right: 51px;
+		float: none;
+		}
+
+		.topnav a.icon 
+		{
+		float: right;
+		display: block;
+		margin-right: -14px;
+		margin-top:-49px;
+		}
+	
+		.topnav.responsive
+		{
+		position: relative;
+		}
+		
+		.topnav.responsive .icon 
+		{
+		position: absolute;
+		right: 0;
+		top: 43px;
+		}
+		
+		.topnav.responsive a
+		{
+		float: none;
+		display: block;
+		text-align: left;
+		margin-left: -1px;
+	}}
+		
+		
+	@media (max-width:375px) {
+		
+	.event-btn-save
+{
+   }
+		.margin-date
+		{
+		    width: 180px;
+		}
+		.margin-NIC
+		{
+			margin-top:10px;
+			margin-left: 16px;
+			width:150px;
+		}
+		.margin-lable
+		{
+	    margin-top: 55px;
+		margin-right: 10px;
+		margin-left: -239px;
+		padding-left:20px;
+		}
+
+		.upload-btn
+		{        
+		margin-right: 83px;
+		margin-top: 22px;
+		}
+		
+		.img
+		{
+		margin-right: 51px;}
+		}
+	
+	
+	@media (max-width:425px){
+		
+		.size
+		{
+			margin-left:64px;
+			font-size:11px;
+		}
+		.sub-loginheader
+		{
+		font-size:16px;
+		margin-top: -143px;
+		}
+	
+		.logo
+		{
+		margin-left: -165px;
+		margin-top: 10px;
+		width:50px;
+		height:50px;
+
+		}
+
+		.margin-date
+		{
+		    width: 180px;
+		}
+		
+		.margin-NIC
+		{
+			margin-top:10px;
+			margin-left: 16px;
+			width:150px;
+		}
+		.margin-lable
+		{
+	    margin-top: 60px;
+		margin-right: 8px;
+		margin-left: -239px;
+		}
+		.submit
+		{	margin-top: 119px;
+		float: right;
+		padding: 10px 41px;
+		background-color: #4169E1;
+		color: #ffffff;
+		margin-bottom: 19px;
+		border: 1px;
+		margin-right:10px;
+		}
+		
+		.eventbtn
+		{
+		
+	    margin-left: 56px;
+		margin-top: 98px;
+		padding: 8px 25px;
+		background-color: #4169E1;
+		color: #ffffff;
+		border: 1px;
+		}
+		
+		.event-btn-save
+		{
+		
+	    padding: 8px 25px;
+		background-color: #4169E1;
+		color: #ffffff;
+		margin-bottom: 19px;
+		border: 1px;
+		margin-top: -55px;
+		margin-left: 191px;
+		}
+		
+		.copyright
+		{
+		display:none;
+		}
+	}
+	/* use a semi-transparent image for the overlay */
+  #overlay {
+    background-image:url(../Images/transparent.png)
+    color:#efefef;
+    height:450px;
+  }
+  /* container for external content. uses vertical scrollbar, if needed */
+  div.contentWrap {
+    height:441px;
+    overflow-y:auto;
+  }
+  
+	
+	
+	

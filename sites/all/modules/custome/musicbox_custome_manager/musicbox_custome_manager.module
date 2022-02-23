@@ -1,0 +1,79 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_custome_manager_menu() {
+$items = array();
+	$items['registration_admin'] = array(
+		'title' => 'Registration',
+		'page callback' => 'drupal_get_form',
+		'page arguments' => array('manager_registration_page'),
+		'access arguments' => array('access content'),
+	);
+	
+	return $items;
+ 
+}
+ 
+ 
+
+function manager_registration_page($form, &$form_state) {
+	$form['name'] = array(
+		'#type' => 'textfield',
+		'#title' => 'Username',
+		'#attributes' => array('class' => array('hidevaluetext')),
+	);
+	$form['pass'] = array(
+		'#type' => 'password',
+		'#title' => 'Password',
+		'#attributes' => array('class' => array('hidevaluetext')),
+	);	
+	$form['mail'] = array(
+		'#type' => 'textfield',
+		'#title' => t('E-mail'),
+	);
+	
+	$form['submit'] = array(
+		'#type' => 'submit',
+		'#value' => t('Create new account'),
+		'#attributes' => array('class' => array('managersubmit')),
+	);
+	
+	return $form;
+
+}
+function manager_registration_page_submit($form, &$form_state) {
+	$pass = user_password();
+	$newuser = array(
+	  'name' => $form_state['values']['name'],
+	  'pass' => $pass,
+	  'mail' => $form_state['values']['mail'],
+	  'init' => $form_state['values']['mail'],
+	  'status' => 1,
+	
+  'access' => REQUEST_TIME,
+  'roles' =>  array(
+    DRUPAL_AUTHENTICATED_RID => 'authenticated user',
+    6 => 'backend admin', // role id for custom roles varies per website
+  ),
+	
+	
+	);         
+	$user = user_save('', $newuser);
+	$user->password = $pass; // Add plain text password into user account to generate mail tokens.
+	_user_mail_notify('register_no_approval_required', $user);
+	
+	drupal_set_message('DONE!');
+
+} 
+
+
+
+
+
+
+
+  
+
+

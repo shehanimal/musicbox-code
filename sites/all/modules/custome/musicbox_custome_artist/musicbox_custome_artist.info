@@ -1,0 +1,6 @@
+name = Music box Artist pannel
+description = Artist's custom form
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

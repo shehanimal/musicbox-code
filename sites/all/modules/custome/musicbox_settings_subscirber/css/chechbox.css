@@ -1,0 +1,132 @@
+.btn-default {
+    color: #FEAB3E;
+    background-color: #fff;
+    border-color: #FEAB3E;
+}
+
+.btn-default:hover {
+    color:#fff;
+    background-color: #FEAB3E;
+    border-color: #FEAB3E;
+}
+
+
+/* The container */
+.boxcheck {
+    display: block;
+    position: relative;
+  
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+/* Hide the browser's default checkbox */
+.boxcheck input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+}
+
+/* Create a custom checkbox */
+.checkmark {
+    position: absolute;
+    top: 0;
+    left: 62%;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+}
+
+/* On mouse-over, add a grey background color */
+.boxcheck:hover input ~ .checkmark {
+    background-color: #ccc;
+}
+
+/* When the checkbox is checked, add a blue background */
+.boxcheck input:checked ~ .checkmark {
+    background-color: #FEAB3E;
+}
+
+/* Create the checkmark/indicator (hidden when not checked) */
+.checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+/* Show the checkmark when checked */
+.boxcheck input:checked ~ .checkmark:after {
+    display: block;
+}
+
+/* Style the checkmark/indicator */
+.boxcheck .checkmark:after {
+    left: 9px;
+    top: 5px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+}
+.caption {
+    padding-bottom: 10px;
+    font-weight: bold;
+}
+
+.unsubcontent {
+    background-color: #013364;
+    color: #fff;
+    font-size: 33px;
+}
+
+.img-thumbnail {
+    padding: 0px;
+}
+.circle {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.circular--portrait {
+    position: relative;
+    width: 7vw;
+    height: 7vw;
+    overflow: hidden;
+    border-radius: 50%;
+}
+
+
+
+.scrollbar-Subscription {
+    height: 340px;
+    overflow-y: scroll;
+    margin-bottom: 25px;
+}
+.force-overflow-Subscription {
+    padding-left: 9px;
+}
+
+
+@media (max-width: 1024px){
+.circular--portrait {
+    width: 10vw;
+height: 10vw;}
+}
+@media (max-width: 768px){
+.circular--portrait {
+    width: 13vw;
+height: 13vw;}
+}
+@media (max-width: 425px){
+.circular--portrait {
+    width: 19vw;
+    height: 25vw;
+}
+}

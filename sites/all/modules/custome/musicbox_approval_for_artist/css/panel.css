@@ -1,0 +1,39 @@
+.video-css2 {
+    width: 35%;
+    margin-top: 7px;
+}.img-css2 {
+   
+    height: 100px;
+    margin-bottom: 5px;
+}.height {
+    height: 230px;
+}   /*panel-post*/
+
+   .border-col{border: 1px solid #6666;}
+   
+   
+  /*  panel-video */
+   video.video-css {
+    width: 35%;
+}
+.col-lg-3.col-md-4.col-sm-6.col-xs-12.border-col.text-center.m-top {
+    margin-top: 5px;
+}
+   
+  /*  panel-img */
+
+img.img-css {
+    width: 35%;
+	    height: 55px;
+		margin-bottom:5px;
+}
+
+.scrollbar-display-panel
+{
+	
+	height:500px;
+	overflow-y: scroll;
+	overflow-x: hidden;
+	margin-bottom: 25px;
+}
+

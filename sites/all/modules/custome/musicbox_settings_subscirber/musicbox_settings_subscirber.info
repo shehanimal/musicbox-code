@@ -1,0 +1,6 @@
+name = Musicbox Settings Page
+description = Subscriber's package settings  functionality 
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

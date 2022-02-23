@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_artist_uploade_info_page_menu(){
+    $items = array();
+    $items['uploade/%'] = array(
+        'page callback' => 'musicbox_uploade_info_page',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+    return $items;
+}
+
+/**
+ * Implements hook_form()
+ */
+function musicbox_uploade_info_page() {
+    print theme('musicbox_uploade_info_page_theme');
+}
+
+
+
+/**
+ * Implements hook_theme()
+ * @return type
+ */
+function musicbox_artist_uploade_info_page_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_artist_uploade_info_page');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_uploade_info_page_theme' => $base + array(
+                'template' => 'uploade_info_page',
+                'variables' => array(
+                    
+
+                    'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    ),
+            ),
+    );
+}
+
+
+
+

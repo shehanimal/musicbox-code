@@ -1,0 +1,633 @@
+		<?php 
+
+function musicbox_artist_dashboard_block_info() {    
+  $blocks = array();
+  
+  $blocks['artist_todays_motivation'] = array(
+    // info: The name of the block.
+    'info' => t('Today Motivation'),
+  );
+  
+    $blocks['artist_infortatement_pictuer'] = array(
+    // info: The name of the block.
+    'info' => t('Poster'),
+  );
+  
+    $blocks['artist_infortatement_video'] = array(
+    // info: The name of the block.
+    'info' => t('Story Video'),
+  );
+  
+    $blocks['artist_infortatement_learn'] = array(
+    // info: The name of the block.
+    'info' => t('Infor LearnLearn'),
+  );
+  
+   
+   $blocks['user_profile_pic_update'] = array(
+    // info: The name of the block.
+    'info' => t('profile pic update'),
+  );
+  
+$blocks['artist_profile_pic_update'] = array(
+    // info: The name of the block.
+    'info' => t('artist pic'),
+  );
+   $blocks['user_artist_profile_pic_update'] = array(
+    // info: The name of the block.
+    'info' => t('artist profile pic '),
+  );
+  
+  return $blocks;
+}
+
+function musicbox_artist_dashboard_block_view($delta = '') {
+  // This example is adapted from node.module.
+  $block = array();
+
+  switch ($delta) {
+    case 'artist_todays_motivation':
+      $block['subject'] = t('Today&#39;s Motivation');
+      $block['content'] = drupal_render(drupal_get_form('musicbox_artist_todays_motivation_form'));
+      break;
+  }
+  
+    switch ($delta) {
+    case 'artist_infortatement_pictuer':
+      $block['subject'] = t('Story Picture');
+      $block['content'] = drupal_render(drupal_get_form('musicbox_artist_infortatement_pic_form'));
+      break;
+  }
+  
+    switch ($delta) {
+    case 'artist_infortatement_video':
+      $block['subject'] = t('Story Video');
+      $block['content'] = drupal_render(drupal_get_form('musicbox_artist_infortatement_video_form'));
+      break;
+  }
+  
+    switch ($delta) {
+    case 'artist_infortatement_learn':
+      $block['subject'] = t('Infor Learn');
+      $block['content'] = drupal_render(drupal_get_form('musicbox_artist_infortatement_learn_form'));
+      break;
+  }
+  
+      switch ($delta) {
+    case 'user_profile_pic_update':
+      $block['subject'] = t('Edit Pic');
+      $block['content'] = drupal_render(drupal_get_form('musicbox_user_profile_pic_update_form'));
+      break;
+  }
+  
+        switch ($delta) {
+    case 'artist_profile_pic_update':
+      $block['subject'] = t('Edit Pic');
+      $block['content'] = drupal_render(drupal_get_form('musicbox_artist_profile_pic_update_form'));
+      break;
+  }
+  return $block;
+}
+//**********************************************************************
+function musicbox_artist_profile_pic_update_form() {
+  // Your form will go here.
+  $form['artist_id'] = array
+  (  '#title' =>  t(‘ID’),
+
+ '#value' => arg(1),
+
+ '#type' => 'hidden',
+);
+  
+  $form['ppic'] = array(
+            '#type' => 'managed_file',
+            
+            '#upload_validators' => array(
+                'file_validate_extensions' => array('jpg jpeg png gif'),
+            ),
+            '#description' => t('Upload a Profile picture'),
+            '#upload_location' => 'public://form_user/',
+          
+		   '#required' => TRUE,
+        );
+		  
+$form['submit'] = array (
+'#type' => 'submit',
+'#attributes'=>array('class'=> array('artist_button')),
+'#value' => t('Save'),
+);
+  return $form;
+}
+//**********************************************************************
+function musicbox_user_profile_pic_update_form() {
+  // Your form will go here.
+
+
+ $form['profile_pic'] = array
+          (  '#type' => 'managed_file',
+    
+			'#required' => TRUE,
+            '#upload_validators' => array(
+                'file_validate_extensions' => array('jpg jpeg png gif'),
+            ),
+          
+            '#upload_location' => 'public://user_profile/',
+           //'#process' => array('import_my_file_element_process'),
+		   '#attributes' => array(
+    'class' => array('snapof|_story'),
+  ),
+        );
+		  
+  $form['submit'] = array
+  (
+    '#type' => 'submit',
+    '#value' => t('Upload'),
+			      '#attributes' => array(
+           'class' => array('profpiceditsubmit'),
+		   'id' => array('profpiceditsubmit'),
+          
+  ),
+  );
+  return $form;
+}
+//**********************************************************************
+function musicbox_artist_todays_motivation_form() {
+  // Your form will go here.
+  $form['todays_motivation'] = array
+  (  '#title' => 'Today&#39;s Motivation',
+     '#required' => TRUE,
+    '#type' => 'textarea',
+	'#attributes' => array(
+    'class' => array('todaymotivation_text'),
+  ),
+    
+  );
+  
+ 
+  $form['submit'] = array
+  (
+    '#type' => 'submit',
+    '#value' => t('POST'),
+			   '#attributes' => array(
+           'class' => array('platformsubmit'),
+  ),
+  );
+  return $form;
+}
+//*******************************************************************
+function musicbox_artist_infortatement_pic_form() {
+  
+  $form['snap_of_the_day'] = array(
+            '#type' => 'managed_file',
+            '#title' => t('Select a picture'),
+			'#required' => TRUE,
+            '#upload_validators' => array(
+                'file_validate_extensions' => array('jpg jpeg png gif'),
+            ),
+          
+            '#upload_location' => 'public://artist_platform/',
+           //'#process' => array('import_my_file_element_process'),
+		   '#attributes' => array(
+    'class' => array('snapof|_story'),
+  ),
+        );
+		  
+  $form['submit'] = array
+  (
+    '#type' => 'submit',
+    '#value' => t('Upload'),
+			   '#attributes' => array(
+           'class' => array('platformsubmit'),
+  ),
+  );
+  return $form;
+}
+//***************************************************************************
+
+function musicbox_artist_infortatement_video_form() {
+  
+
+		  $form['video_of_the_day'] = array(
+            '#type' => 'managed_file',
+            '#title' => t('Select a Video'),
+			'#required' => TRUE,
+            '#upload_validators' => array(
+                'file_validate_extensions' => array('mp4 ogg avi mov wmv flv ogv webm'),
+            ),
+          
+            '#upload_location' => 'public://story_video/',
+           //'#process' => array('import_my_file_element_process'),
+		   '#attributes' => array(
+           'class' => array('storyvideo'),
+  ),
+		   
+        );
+
+  $form['submit'] = array
+  (
+    '#type' => 'submit',
+    '#value' => t('Upload'),
+			   '#attributes' => array(
+           'class' => array('platformsubmit'),
+  ),
+  );
+  return $form;
+}
+//********************************************************
+function musicbox_artist_infortatement_learn_form() {
+  
+
+$form['artist_learn'] = array
+  (  '#title' => 'Learn',
+  '#required' => TRUE,
+    '#type' => 'textarea',
+			   '#attributes' => array(
+           'class' => array('learnartist'),
+  ),
+    
+  );
+  $form['submit'] = array
+  (
+    '#type' => 'submit',
+    '#value' => t('POST'),
+			   '#attributes' => array(
+           'class' => array('platformsubmit'),
+  ),
+  );
+  return $form;
+}
+//------------------------------------------------------------------------------
+function musicbox_artist_profile_pic_update_form_submit($form, &$form_state) {
+$form_state['redirect'] = 'artist_pictuer/' .$form_state['values']['ppic'].'/'.$form_state['values']['artist_id'];
+
+}
+//------------------------------------------------------------------------------
+function musicbox_user_profile_pic_update_form_submit($form, &$form_state) {
+$form_state['redirect'] = 'update_profile/' .$form_state['values']['profile_pic'];
+
+}
+
+
+//------------------------------------------------------------------------------
+function musicbox_artist_todays_motivation_form_submit($form, &$form_state) {
+$form_state['redirect'] = 'artist/motivation/' . $form_state['values']['todays_motivation'];
+
+}
+//------------------------------------------------------------------------------
+function musicbox_artist_infortatement_pic_form_submit($form, &$form_state) {
+$form_state['redirect'] = 'artist/story_pic/' .$form_state['values']['snap_of_the_day'];
+
+}
+//------------------------------------------------------------------------------
+function musicbox_artist_infortatement_video_form_submit($form, &$form_state) {
+$form_state['redirect'] = 'artist/story_video/' .$form_state['values']['video_of_the_day'];
+
+}
+//------------------------------------------------------------------------------
+function musicbox_artist_infortatement_learn_form_submit($form, &$form_state) {
+$form_state['redirect'] = 'artist/learn/' .$form_state['values']['artist_learn'];
+
+} 
+
+
+function musicbox_artist_dashboard_menu()
+{
+	$menu = array();
+//************************************************************************
+  $menu['update_profile/%'] = array
+  (
+    'title' => 'My form submitted values',
+    'page callback' => 'musicbox_user_profile_pic_update_callback',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+  );
+//**************************************************************************  
+  $menu['artist_pictuer/%/%'] = array
+  (
+    'title' => 'My form submitted values',
+    'page callback' => 'musicbox_artist_pictuer_update_callback',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+  );
+//**************************************************************************  
+  $menu['artist/motivation/%'] = array
+  (
+    'title' => 'My form submitted values',
+    'page callback' => 'musicbox_artist_todays_motivation_value_callback',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+  );
+//**********************************************************************
+    $menu['artist/story_pic/%'] = array
+  (
+    'title' => 'My form submitted values',
+    'page callback' => 'musicbox_artist_infortatement_pic_value_callback',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+  );
+ //**********************************************************************
+    $menu['artist/story_video/%'] = array
+  (
+    'title' => 'My form submitted values',
+    'page callback' => 'musicbox_artist_infortatement_video_value_callback',
+    
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+  );
+  //********************************************************************
+    $menu['artist/learn/%'] = array
+  (
+    'title' => 'My form submitted values',
+    'page callback' => 'musicbox_artist_infortatement_learn_value_callback',
+    'page arguments' => array(3),
+    'access callback' => TRUE,
+  );
+  //*******************************************************************
+  $menu['approve_story/%'] = array(
+        'page callback' => 'musicbox_artist_approve_story',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+ //*******************************************************************
+     $menu['delete_story/%'] = array(
+        'page callback' => 'musicbox_artist_delete_story',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );	
+  return $menu;
+}
+
+function musicbox_artist_test_form(){
+	$block1 = module_invoke('musicbox_artist_dashboard', 'block_view', 'artist_todays_motivation');
+	                if ($block1['content']){
+					print render($block1['content']);}
+}
+
+
+function musicbox_artist_todays_motivation_value_callback(){
+  global $user;
+  global $base_url;
+	
+	$modulePath = drupal_get_path('module', 'musicbox_artist_dashboard');
+	$fullurl = $base_url.'/'.$modulePath;
+    $cuser = user_load($user->uid);
+	
+	$uniqueId= time();
+	print arg(2).'<br>';
+	
+	$node = new stdClass();
+	$node->type = "artist_mobile_view";
+    node_object_prepare($node); 
+    $node->language = LANGUAGE_NONE; 
+  
+$node->field_mobile_artist_uid[$node->language][]['value'] = $cuser->uid;
+$node->field_today_motivation[$node->language][]['value'] = arg(2);
+
+$node->field_artist_name_mobile[$node->language][]['value'] = $cuser->name;
+$node->field_type_of_info[$node->language][]['tid'] = 20;
+node_save($node);
+
+
+
+	drupal_goto($base_url."/status");
+	
+}
+/*--------------------------------profile pic callback-----------------------------*/
+function musicbox_artist_pictuer_update_callback(){
+
+	 global $base_url;
+	
+
+    $cuser = user_load(arg(2));
+	
+	$uniqueId= time();
+	print arg(1).'<br>';
+	print arg(2);
+	
+
+
+ $profilepic = file_load(arg(1));
+    // Change status to permanent.
+    $profilepic->status = FILE_STATUS_PERMANENT;
+    $profilepic->display=1;
+    // Save.
+    $uploaded = file_save($profilepic);
+    if ($uploaded == TRUE) {
+		$profile =  profile2_load_by_user($cuser->uid, $type_name = 'artist');
+   
+		
+        $profilepic = file_copy($profilepic, 'public://user_profile/');
+        
+		$profile->field_artist_profile_picture[LANGUAGE_NONE][0] = (array) $profilepic;
+		
+    }
+
+
+
+
+   profile2_save($profile);
+
+
+  drupal_goto($base_url."/artist-info");
+	
+}
+/*--------------------------------profile pic callback-----------------------------*/
+function musicbox_user_profile_pic_update_callback(){
+  global $user;
+  global $base_url;
+	
+	$modulePath = drupal_get_path('module', 'musicbox_artist_dashboard');
+	$fullurl = $base_url.'/'.$modulePath;
+    $cuser = user_load($user->uid);
+	
+	$uniqueId= time();
+	print arg(1).'<br>';
+	
+
+
+ $profilepic = file_load(arg(1));
+    // Change status to permanent.
+    $profilepic->status = FILE_STATUS_PERMANENT;
+    $profilepic->display=1;
+    // Save.
+    $uploaded = file_save($profilepic);
+    if ($uploaded == TRUE) {
+		$profile =  profile2_load_by_user($cuser->uid, $type_name = 'subscriber');
+   
+		
+        $profilepic = file_copy($profilepic, 'public://user_profile/');
+        
+		$profile->field_subs_profile_pic[LANGUAGE_NONE][0] = (array) $profilepic;
+		
+    }
+
+
+
+
+   profile2_save($profile);
+
+
+  drupal_goto($base_url."/user");
+	
+}
+
+
+/*--------------------------------pic callback-----------------------------*/
+function musicbox_artist_infortatement_pic_value_callback(){
+  global $user;
+  global $base_url;
+	
+	$modulePath = drupal_get_path('module', 'musicbox_artist_dashboard');
+	$fullurl = $base_url.'/'.$modulePath;
+    $cuser = user_load($user->uid);
+	
+	$uniqueId= time();
+	print arg(2).'<br>';
+	
+    $node = new stdClass();
+    $node->type = "artist_mobile_view";
+    node_object_prepare($node); 
+    $node->language = LANGUAGE_NONE; 
+  
+    $node->field_mobile_artist_uid[$node->language][]['value'] = $cuser->uid;
+
+
+	 $storypic = file_load(arg(2));
+		// Change status to permanent.
+		$storypic->status = FILE_STATUS_PERMANENT;
+		$storypic->display=1;
+		// Save.
+		$uploaded = file_save($storypic);
+		 if ($uploaded == TRUE) {
+			$node->field_story_image_fid[$node->language][]['value'] = arg(2); 
+	     }
+
+  $node->field_type_of_info[$node->language][]['tid'] = 18;
+  $node->field_artist_name_mobile[$node->language][]['value'] = $cuser->name;
+  node_save($node);
+  drupal_goto($base_url."/status");
+	
+}
+
+/*-----------------------------video callback----------------------------*/
+function musicbox_artist_infortatement_video_value_callback(){
+  global $user;
+  global $base_url;
+	
+	$modulePath = drupal_get_path('module', 'musicbox_artist_dashboard');
+	$fullurl = $base_url.'/'.$modulePath;
+	
+    $cuser = user_load($user->uid);
+	
+	$uniqueId= time();
+	print arg(2).'<br>';
+	
+	
+	$node = new stdClass();
+    $node->type = "artist_mobile_view";
+    node_object_prepare($node); 
+    $node->language = LANGUAGE_NONE; 
+  
+    $node->field_mobile_artist_uid[$node->language][]['value'] = $cuser->uid;
+
+    	 $videopic = file_load(arg(2));
+		// Change status to permanent.
+		$videopic->status = FILE_STATUS_PERMANENT;
+		$videopic->display=1;
+		// Save.
+		$viduploaded = file_save($videopic);
+		 if ($viduploaded == TRUE) {
+			$node->field_story_video_image[$node->language][]['value'] = arg(2); 
+			 
+		 }
+	 $node->field_artist_name_mobile[$node->language][]['value'] = $cuser->name;
+	 $node->field_type_of_info[$node->language][]['tid'] = 19;
+     node_save($node);
+     
+	 drupal_goto($base_url."/status");
+	
+}
+
+/*-------------------------learn callback----------------------*/
+function musicbox_artist_infortatement_learn_value_callback(){
+	
+  global $user;
+  global $base_url;
+	
+	$modulePath = drupal_get_path('module', 'musicbox_artist_dashboard');
+	$fullurl = $base_url.'/'.$modulePath;
+	
+
+	
+	$cuser = user_load($user->uid);
+	
+	$uniqueId= time();
+	print arg(2).'<br>';
+	
+	
+	$node = new stdClass();
+    $node->type = "artist_mobile_view";
+    node_object_prepare($node); 
+    $node->language = LANGUAGE_NONE; 
+  
+    $node->field_mobile_artist_uid[$node->language][]['value'] = $cuser->uid;
+    $node->field_artist_name_mobile[$node->language][]['value'] = $cuser->name;
+    $node->field_artist_learn[$node->language][]['value'] = arg(2);
+	$node->field_type_of_info[$node->language][]['tid'] = 21;
+
+  node_save($node);
+  drupal_goto($base_url."/status");
+	
+	
+}
+
+
+
+
+
+?>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

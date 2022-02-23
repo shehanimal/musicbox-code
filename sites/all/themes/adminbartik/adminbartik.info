@@ -1,0 +1,38 @@
+
+name = Adminbartik
+description = A flexible, recolorable theme with many regions.
+package = Core
+version = VERSION
+core = 7.x
+
+stylesheets[all][] = css/layout.css
+stylesheets[all][] = css/bootstrap.css
+stylesheets[all][] = css/bootstrap.min.css
+stylesheets[all][] = css/style.css
+stylesheets[all][] = css/responsive.css
+stylesheets[all][] = css/colors.css
+
+stylesheets[print][] = css/print.css
+
+
+
+scripts[] = js/bootstrap.min.js
+scripts[] = js/custom.js
+
+
+regions[page_top] = Page top
+regions[page_bottom] = Page bottom
+regions[highlighted] = Highlighted
+
+regions[featured] = Featured
+regions[content] = Content
+regions[footer] = Footer
+
+settings[shortcut_module_link] = 0
+
+
+; Information added by Drupal.org packaging script on 2017-06-21
+version = "7.56"
+project = "drupal"
+datestamp = "1498069849"
+

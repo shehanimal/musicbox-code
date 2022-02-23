@@ -1,0 +1,49 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_artist_album_menu() {
+	$items = array();
+$items['pictures/%'] = array(
+        'page callback' => 'musicbox_artist_album_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+	
+
+	
+	
+  return $items;
+ 
+}
+
+
+//****************************************************************************************************************************************
+
+function musicbox_artist_album_callback() {
+    print theme('musicbox_artist_album_item'); 
+	
+}
+
+function musicbox_artist_album_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_artist_album');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+
+
+   
+    return array(
+        'musicbox_artist_album_item' => $base + array(
+                'template' => 'artist_album',
+       
+            ),
+    );
+	
+
+	
+	
+}

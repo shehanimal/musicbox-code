@@ -1,0 +1,437 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_approval_for_artist_menu(){
+    $items = array();
+    $items['artist-approval'] = array(
+        'page callback' => 'artist_posts_approval',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+	$items['selectall_submit'] = array(
+        'page callback' => 'artist_select_all_submit',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	$items['selectall_delete'] = array(
+        'page callback' => 'artist_select_all_delete',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+	$items['artistapproval_process'] = array(
+        'page callback' => 'musicbox_artistapproval_process',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+);
+	
+	
+    return $items;
+}
+
+
+function musicbox_artistapproval_process(){
+	
+	
+		  
+ $output = '';  
+ if(isset($_POST["post_nid"]))  
+ {  
+     if($_POST["post_nid"] != '')  
+      {
+
+		  
+	$query1 = db_select('node', 'n');
+	$query1->join('field_data_field_type_of_info', 't', 'n.nid = t.entity_id');
+    $query1->fields('n', array('nid'));
+	$query1->condition('n.status', '0', '=');
+	$query1->condition('n.type', 'artist_mobile_view', '=');
+	$query1->condition('t.field_type_of_info_tid', $_POST["post_nid"], '=');	
+	$query1->orderBy('n.created', 'DESC');
+	$result1 = $query1->execute();
+      }
+	  else  
+      {  
+    $query1 = db_select('node', 'n');
+	$query1->distinct();
+    $query1->fields('n', array('nid'));
+	$query1->condition('n.type', 'artist_mobile_view', '=');
+	$query1->condition('n.status', '0', '=');
+	$query1->orderBy('n.created', 'DESC');
+	$result1 = $query1->execute(); 
+      }  
+
+
+  
+  while ($record1 = $result1->fetchAssoc())  
+      {  
+           $node = node_load($record1['nid']);
+    
+	$createdate = date('Y-m-d',$node->created);
+		   
+		   
+		     	if(isset($node->field_story_image_fid['und'][0]['value'])){
+	$story_image_file = file_load($node->field_story_image_fid['und'][0]['value']); 
+	$story_image_uri = $story_image_file->uri; 
+	$story_image_url = file_create_url($story_image_uri); 
+	
+	$display = '<img src="'.$story_image_url.'" style="height:150px;" >';
+	}else if(isset($node->field_story_video_image['und'][0]['value']))
+	{
+		
+	$story_video_file = file_load($node->field_story_video_image['und'][0]['value']); 
+	$story_video_uri = $story_video_file->uri; 
+	$story_video_url = file_create_url($story_video_uri);
+		
+		
+	$display = '<video width="200" height="150" controls id="video">
+    <source src="'.$story_video_url.'" type="video/mp4">
+</video>';
+		
+	}else if(isset($node->field_artist_learn['und'][0]['value'])){
+		$display = $node->field_artist_learn['und'][0]['value'];
+		
+	}else if(isset($node->field_today_motivation['und'][0]['value'])){
+		$display = $node->field_today_motivation['und'][0]['value'];
+		
+	}else if(isset($node->field_artist_random_thought['und'][0]['value'])){
+		$display = $node->field_artist_random_thought['und'][0]['value'];
+		
+	}
+    $artist = user_load($node->field_mobile_artist_uid['und'][0]['value']);
+    if(isset($node->field_mobile_artist_uid['und'][0]['value'])){
+	$artist_name = $artist->name;
+	}
+	    
+		        $output .= 
+		
+		   
+		   '<div class="col-md-4 col-xs-12 col-sm-6 col-lg-3 border-col text-center m-top height">
+		   <input class="checkbox" type="checkbox" name="check_list[]" value="'.$node->nid.'">
+								'.$display.'
+								
+								<div class="caption text-center"><label><br>'.$createdate.'</label><br>'.$artist_name.'</div>
+								
+								</div>';
+		   
+	                                        
+		   
+		   
+      }  
+   
+	  }   
+       
+        
+      echo $output;  
+  
+ 
+
+	
+	
+
+}
+
+
+
+
+function artist_select_all_submit(){
+global $base_url;
+$modulePath = drupal_get_path('module', 'musicbox_approval_for_artist');
+
+$fullurl = $base_url.'/'.$modulePath;	
+	if(isset($_POST['submit'])){
+if(!empty($_POST['check_list'])) {
+// Counting number of checked checkboxes.
+$checked_count = count($_POST['check_list']);
+
+
+// Loop to store and display values of individual checked checkbox.
+
+$uniqueId= time();
+foreach($_POST['check_list'] as $selected) {
+$node = node_load($selected);
+$node->status = 1;
+node_save($node);
+
+$art_id = $node->field_mobile_artist_uid['und'][0]['value'];
+
+
+ $profile =  profile2_load_by_user($art_id, $type_name = 'artist');
+
+
+	$profile->field_updated_infor[LANGUAGE_NONE][0]["value"] = 1; 
+    profile2_save($profile) ;
+
+$id = db_insert("music_box_infortatemnet")
+    ->fields(array(
+	    'recode_id' => $selected.$uniqueId,
+        'info_node_id' => $selected,
+        'artist_uid' => $node->field_mobile_artist_uid['und'][0]['value'],
+        'infor_id' => $node->field_type_of_info['und'][0]['tid'],
+        'infor_date' => date('Y-m-d h:i:s'),
+       
+    ))
+    ->execute();
+
+
+}
+
+}
+}else if(isset($_POST['delete'])){
+if(!empty($_POST['check_list'])) {
+
+foreach($_POST['check_list'] as $selected) {
+$node = node_load($selected);
+node_delete($node->nid);
+
+}
+
+}	
+	
+	
+}
+drupal_goto($base_url."/artist-approval");	
+}
+
+
+function artist_select_all_delete(){
+global $base_url;
+$modulePath = drupal_get_path('module', 'musicbox_approval_for_artist');
+
+$fullurl = $base_url.'/'.$modulePath;	
+	if(isset($_POST['submit'])){
+if(!empty($_POST['check_list'])) {
+// Counting number of checked checkboxes.
+$checked_count = count($_POST['check_list']);
+
+// Loop to store and display values of individual checked checkbox.
+foreach($_POST['check_list'] as $selected) {
+$node = node_load($selected);
+
+$artist_id = $node->field_mobile_artist_uid['und'][0]['value'];
+
+$node->status = 1;
+node_save($node);
+
+$profile =  profile2_load_by_user($artist_id, $type_name = 'artist');
+   $profile->field_artist_story_update['und'][0]['value'] = 1;
+   profile2_save($profile);
+
+}
+
+}
+}else if(isset($_POST['delete'])){
+if(!empty($_POST['check_list'])) {
+
+foreach($_POST['check_list'] as $selected) {
+$node = node_load($selected);	
+
+   
+$node->status = 0;
+node_save($node);
+
+}
+
+}	
+	
+	
+}
+drupal_goto($base_url."/artist-approval");	
+}
+
+/**
+ * Implements hook_form()
+ */
+function artist_posts_approval() {
+    print theme('artist_posts_approval_page_theme');
+}
+
+
+
+/**
+ * Implements hook_theme()
+ * @return type
+ */
+function musicbox_approval_for_artist_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_approval_for_artist');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'artist_posts_approval_page_theme' => $base + array(
+                'template' => 'artist_posts_approval_page',
+                'variables' => array(
+                    
+
+                    'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    ),
+            ),
+    );
+}
+function _get_infor_image_appr(){
+	 					
+    $imin_query = db_select('node', 'n');
+	$imin_query->join('field_data_field_story_image_fid', 'img', 'n.nid = img.entity_id');
+	$imin_query->fields('n', array('nid'));
+	$imin_query->condition('n.type', 'artist_mobile_view', '=');
+	$imin_query->condition('n.status', '0', '=');
+	$imin_query->isNotNull('img.field_story_image_fid_value');
+
+    $imin_object = $imin_query->execute()->fetchAll();
+	
+	return $imin_object;
+	
+}
+
+
+
+function _get_infor_video_appr(){
+	 					
+    $vidin_query = db_select('node', 'n');
+	$vidin_query->join('field_data_field_story_video_image', 'vid', 'n.nid = vid.entity_id');
+	$vidin_query->fields('n', array('nid'));
+	$vidin_query->condition('n.type', 'artist_mobile_view', '=');
+	$vidin_query->condition('n.status', '0', '=');
+	$vidin_query->isNotNull('vid.field_story_video_image_value');
+
+    $vidin_object = $vidin_query->execute()->fetchAll();
+	
+	return $vidin_object;
+	
+}
+
+
+
+function _get_infor_motivate_appr(){
+	 					
+    $motiin_query = db_select('node', 'n');
+	$motiin_query->join('field_data_field_today_motivation', 'moti', 'n.nid = moti.entity_id');
+	$motiin_query->fields('n', array('nid'));
+	$motiin_query->condition('n.type', 'artist_mobile_view', '=');
+	$motiin_query->condition('n.status', '0', '=');
+	$motiin_query->isNotNull('moti.field_today_motivation_value');
+
+    $motiin_object = $motiin_query->execute()->fetchAll();
+	
+	return $motiin_object;
+	
+}
+function _get_infor_learn_appr(){
+	 					
+    $learnin_query = db_select('node', 'n');
+	$learnin_query->join('field_data_field_artist_learn', 'learn', 'n.nid = learn.entity_id');
+	$learnin_query->fields('n', array('nid'));
+	$learnin_query->condition('n.type', 'artist_mobile_view', '=');
+	$learnin_query->condition('n.status', '0', '=');
+	$learnin_query->isNotNull('learn.field_artist_learn_value');
+
+    $learnin_object = $learnin_query->execute()->fetchAll();
+	
+	return $learnin_object;
+	
+}
+
+function fill_infrotype()  
+ {  
+      $output = '';  
+    
+	$plans_query = db_select('taxonomy_term_data', 'tax');
+	$plans_query->fields('tax', array('tid','name'));
+	$plans_query->condition('tax.vid', '6', '=');
+	$plans_object = $plans_query->execute()->fetchAll();
+      foreach ($plans_object as $packages)  
+      {  
+           $output .= '<option value="'.$packages->tid.'">'.$packages->name.'</option>';  
+      }  
+      return $output; 
+    
+ }
+  
+	
+
+function _get_listof_infortatements()  
+ {  
+ $output = '';  
+    
+	$info_query = db_select('node', 'n');
+	$info_query->fields('n', array('nid'));
+	$info_query->condition('n.type', 'artist_mobile_view', '=');
+	$info_query->condition('n.status', '0', '=');
+	$info_query->orderBy('n.created', 'DESC');
+    $info_object = $info_query->execute()->fetchAll();
+      foreach ($info_object as $infobject) 
+      {  
+          
+
+    $node = node_load($infobject->nid);
+	
+	$createdate = date('Y-m-d',$node->created);
+   	if(isset($node->field_story_image_fid['und'][0]['value'])){
+	$story_image_file = file_load($node->field_story_image_fid['und'][0]['value']); 
+	$story_image_uri = $story_image_file->uri; 
+	$story_image_url = file_create_url($story_image_uri); 
+	
+
+	
+	
+	$display = '<img src="'.$story_image_url.'" class="img-css2">';
+	}else if(isset($node->field_story_video_image['und'][0]['value']))
+	{
+		
+	$story_video_file = file_load($node->field_story_video_image['und'][0]['value']); 
+	$story_video_uri = $story_video_file->uri; 
+	$story_video_url = file_create_url($story_video_uri);
+		
+		
+	$display = 
+		
+		'<video src="'.$story_video_url.'" type="mp4" class="video-css2 ">';
+	}else if(isset($node->field_artist_learn['und'][0]['value'])){
+		$display = '<p>'.$node->field_artist_learn['und'][0]['value'].'</p>';
+		
+	}else if(isset($node->field_today_motivation['und'][0]['value'])){
+		$display = '<p>'.$node->field_today_motivation['und'][0]['value'].'</p>';
+		
+	}else if(isset($node->field_artist_random_thought['und'][0]['value'])){
+		$display ='<p>'.$node->field_artist_random_thought['und'][0]['value'].'</p>';
+		
+	}
+   
+   $artist = user_load($node->field_mobile_artist_uid['und'][0]['value']);
+    if(isset($node->field_mobile_artist_uid['und'][0]['value'])){
+	$artist_name = $artist->name;
+	}
+   
+	      $output .= 
+		
+		   
+		  '<div class="col-lg-6 col-md-6 col-sm-6 col-xs-12 border-col text-center m-top height">
+	<label class="art">'.$artist_name.'</label><br><label class="art">'.$createdate.'</label><br>'.$display.'
+	
+	</div>
+			 ';                               
+		   
+		   
+      }  
+	  
+	  
+      return $output;  
+    
+ }  
+
+
+

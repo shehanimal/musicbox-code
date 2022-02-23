@@ -1,0 +1,60 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+ 
+ function musicbox_subscriber_report_menu() {
+	$items = array();
+
+
+$items['subscriber/report'] = array(
+        'page callback' => 'subscriber_information_report',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+return $items;
+ 
+}
+
+function subscriber_information_report() {
+    print theme('musicbox_subscriber_report_theme');
+}
+
+function musicbox_subscriber_report_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_subscriber_report');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_subscriber_report_theme' => $base + array(
+                'template' => 'subscriber_report',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+					
+				
+            ),
+			
+			
+    );
+}
+
+
+
+
+

@@ -1,0 +1,71 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_admin_panel_menu(){
+    $items = array();
+    $items['admin_panel'] = array(
+        'page callback' => 'admin_panel_page',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	$items['admin_count'] = array(
+        'page callback' => '_total_num_of_subs',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+    return $items;
+}
+
+/**
+ * Implements hook_form()
+ */
+function admin_panel_page() {
+    print theme('admin_panel_page_theme');
+}
+
+
+
+/**
+ * Implements hook_theme()
+ * @return type
+ */
+function musicbox_admin_panel_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_admin_panel');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'admin_panel_page_theme' => $base + array(
+                'template' => 'admin_dashboard',
+                'variables' => array(
+                    
+
+                    'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    ),
+            ),
+    );
+}
+
+function _total_num_of_subs(){
+	
+$song_query = db_select('node', 'n');
+$song_query->condition('n.type', 'new_song', '='); 
+$song_query->addExpression('COUNT(n.nid)');
+$song_count = $song_query->execute()->fetchField();
+print $song_count;
+}
+
+

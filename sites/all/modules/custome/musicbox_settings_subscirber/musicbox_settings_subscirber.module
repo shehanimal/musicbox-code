@@ -1,0 +1,194 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_settings_subscirber_menu() {
+	$items = array();
+$items['subscriber/settings'] = array(
+        'page callback' => 'subscribe_settings_page_process',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+
+
+$items['more_artists'] = array(
+        'page callback' => 'select_more_artists_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+
+
+
+	
+
+
+	
+		$items['test_api/%/%/%'] = array(
+        'page callback' => 'musicbox_test_api_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+			$items['test_mail'] = array(
+        'page callback' => 'musicbox_test_mail_call_back',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+  return $items;
+ 
+}
+
+
+function musicbox_test_mail_call_back(){
+	
+	
+	
+$from = "web@kreativekrib.com";
+$message = "<html><body>
+
+
+	<p>Hi [Artist Name]</p>
+
+<p>Thank you for signing up with Music Box, Please find below your user ID and temporary password.</p>
+<p><table width='200' border='1'>
+  <tr>
+    <td>Username:</td>
+    <td>shehani.mal@gamil.com</td>
+  </tr>
+  <tr>
+    <td>Password:</td>
+    <td>kkkkk</td>
+  </tr>
+</table>
+</p>
+
+
+<p>*Once you login, you can change your password ffom the profile settings.</p>
+
+<p>Thank you</p>
+<p>-- Music Box Team --</p>
+
+
+</body></html>";	
+
+	
+$to = "shehani.malsha.mawella@gmail.com"; // to e-mail address
+
+
+
+ 
+$params = array(
+  'subject' => "Inquiry from ",
+  'body' => $message,
+);
+
+// Send out the e-mail.
+drupal_mail('musicbox_settings_subscirber', 'information', $to, language_default(), $params, $from);
+print 'yes';
+drupal_set_message("Sent e-mail to example@example.com");
+	
+}
+
+
+
+
+function musicbox_settings_subscirber_mail($key, &$message, $params){
+
+
+	// Set the mail content type to html to send an html e-mail (optional).
+  $message['headers']['Content-Type'] = 'text/html; charset=UTF-8; format=flowed';
+
+  // Grab the subject and body from params and add it to the message.
+  $message['subject'] = $params['subject'];
+  $message['body'][] = $params['body']; // Drupal 7
+  //$message['body'] = $params['body']; // Drupal 6, I think
+
+  switch ($key) {
+    case "information":
+      // Make other changes here if desired...
+      break;
+  }
+	
+	
+	} 
+
+
+
+
+
+
+
+function subscribe_settings_page_process() {
+    print theme('musicbox_subscribers_settings_display');
+}
+
+function musicbox_settings_subscirber_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_settings_subscirber');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_subscribers_settings_display' => $base + array(
+                'template' => 'settings_subscirber',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+            ),
+    );
+}
+
+
+
+
+
+
+
+
+
+function musicbox_test_api_back(){
+$curl = curl_init();
+
+curl_setopt_array($curl, array(
+  CURLOPT_URL => "https://kreativekrib.com/musicbox.lk/daily_payment",
+  CURLOPT_RETURNTRANSFER => true,
+  CURLOPT_ENCODING => "",
+  CURLOPT_MAXREDIRS => 10,
+  CURLOPT_TIMEOUT => 30,
+  CURLOPT_HTTP_VERSION => CURL_HTTP_VERSION_1_1,
+  CURLOPT_CUSTOMREQUEST => "POST",
+  CURLOPT_POSTFIELDS => "sub_id=".arg(1)."&mobile=".arg(2)."&payment_status=".arg(3)."",
+  CURLOPT_HTTPHEADER => array(
+    "Cache-Control: no-cache",
+    "Content-Type: application/x-www-form-urlencoded",
+    "Postman-Token: 7bf6ee01-476a-4d27-8fbd-d2285a6760f2"
+  ),
+));
+
+$response = curl_exec($curl);
+$err = curl_error($curl);
+
+curl_close($curl);
+
+if ($err) {
+  echo "cURL Error #:" . $err;
+} else {
+  echo $response;
+}
+
+
+}

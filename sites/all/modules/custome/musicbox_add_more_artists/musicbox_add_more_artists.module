@@ -1,0 +1,120 @@
+<?php
+
+/**
+ * Implements hook_menu().
+ */
+function musicbox_add_more_artists_menu() {
+	$items = array();
+$items['add_more'] = array(
+        'page callback' => 'musicbox_add_more_callback',
+        'access arguments' => array('access content'),
+        'type' => MENU_CALLBACK,
+    );
+	
+ 
+	
+
+
+  return $items;
+ 
+}
+//-------------------------------------------------------------
+
+function musicbox_add_more_callback() {
+    print theme('musicbox_addmore_artists_item_theme'); 
+	
+}
+
+function musicbox_add_more_artists_theme() {
+    $modulePath = drupal_get_path('module', 'musicbox_add_more_artists');
+	
+    $base = array(
+        'path' => $modulePath.'/templates',
+    );
+    $boots_js = $modulePath . '/js/bootstrap.js';
+    $bootsmin_js = $modulePath . '/js/bootstrap.min.js';
+
+    $boots_css = $modulePath . '/css/bootstrap.css';
+    $main_css = $modulePath . '/css/style.css';
+
+   
+    return array(
+        'musicbox_addmore_artists_item_theme' => $base + array(
+                'template' => 'add_more_artists',
+                'variables' => array(
+                    
+					'boots_js' => $boots_js,
+                    'bootsmin_js'=> $bootsmin_js,
+                    'boots_css' => $boots_css,
+                    'main_css'=> $main_css,
+                    
+                    ),
+            ),
+    );
+	
+
+	
+	
+}
+
+//**************************************************************
+function select_more_artists_callback(){
+	
+	 $uniqueId= time();
+	 global $user; 
+	 global $base_url;
+$cuser=user_load($user->uid);
+$recent_rec = _artist_recent_in_pack($cuser->uid);
+$num = _get_subs_mobilenum($cuser->uid);
+$mobilenum = '0'.$num;
+	
+	if(isset($_POST['submit'])){//to run PHP script on submit
+if(!empty($_POST['model_selection'])){
+
+foreach($_POST['model_selection'] as $selected){
+	
+
+
+
+$id = db_insert("music_box_subscrib")
+    ->fields(array(
+	    'recode_id' => $selected.$uniqueId,
+        'subs_ID' => $recent_rec,
+        'artist_uid' => $selected,
+		'subscriber_uid' => $cuser->uid,
+		'subscrib_date' => date('Y-m-d h:i:s'), 
+		'sub_status' => 1,
+		'mobile_number' => $mobilenum, 
+		'artist_status' => 1,
+		'verfy_meg' => 'ADDEDMORE', 
+    ))
+    ->execute();
+
+		$id = db_insert("music_box_artist_subscribe")
+    ->fields(array(
+	    'recode_id' => $selected.$uniqueId,
+        's_recodeid' => $recent_rec,
+        'artist_id' => $selected,
+        'sub' => date('Y-m-d h:i:s'),
+		'artist_status' => 1,
+		'sub_id' => $cuser->uid,
+       
+    ))
+    ->execute();
+
+}
+}
+}
+	
+echo "<script>
+window.location.href='/musicbox.lk/user';
+alert('Sucessfully Added Artists ');
+</script>";	
+	  
+//drupal_goto($base_url.'/user');
+	
+	
+/*
+*/
+	
+}

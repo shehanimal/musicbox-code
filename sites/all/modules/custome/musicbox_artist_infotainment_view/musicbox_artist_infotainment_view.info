@@ -1,0 +1,5 @@
+name = "Music Box Artist Infor View"
+description = "define artist infro dispaly in a mobile view"
+core = "7.x"
+version = "7.x-1.0"
+package = musicbox

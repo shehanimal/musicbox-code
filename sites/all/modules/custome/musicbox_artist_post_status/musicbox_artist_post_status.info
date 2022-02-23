@@ -1,0 +1,6 @@
+name = Musicbox Artist Post Status
+description = Admin Panel page of Music Box
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1

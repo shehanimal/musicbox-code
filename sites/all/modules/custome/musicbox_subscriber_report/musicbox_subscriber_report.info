@@ -1,0 +1,6 @@
+name = Musicbox Subscriber Report
+description = page of subscriber report 
+package = musicbox
+
+core = 7.x
+version = 7.x-1.1
